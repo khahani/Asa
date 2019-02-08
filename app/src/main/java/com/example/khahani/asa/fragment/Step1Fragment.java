@@ -79,6 +79,18 @@ public class Step1Fragment extends Fragment {
         }
     };
 
+    private View.OnClickListener mOnClickListenerButtonNext = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mListener !=null){
+                mListener.nextStep(
+                        mBinding.editTextFromDate.getText().toString(),
+                        mBinding.spinnerNumberNights.getSelectedItemPosition() + 1
+                );
+            }
+        }
+    };
+
 
     public Step1Fragment() {
         // Required empty public constructor
@@ -128,6 +140,8 @@ public class Step1Fragment extends Fragment {
 
         mBinding.editTextFromDate.setOnClickListener(mOnClickListenerFromDate);
 
+        mBinding.buttonNext.setOnClickListener(mOnClickListenerButtonNext);
+
         return mBinding.getRoot();
     }
 
@@ -165,5 +179,6 @@ public class Step1Fragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void pickFromDate(View view);
+        void nextStep(String fromDate, int numberNights);
     }
 }

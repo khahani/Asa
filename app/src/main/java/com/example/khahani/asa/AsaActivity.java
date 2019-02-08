@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.khahani.asa.fragment.CityFragment;
 import com.example.khahani.asa.fragment.Step1Fragment;
 import com.example.khahani.asa.fragment.Step1FragmentViewModel;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
@@ -28,6 +29,7 @@ public class AsaActivity extends AppCompatActivity {
 
 
     protected Step1Fragment step1Fragment;
+    protected CityFragment cityFragment;
 
     protected void init(){
         fragmentManager = getSupportFragmentManager();

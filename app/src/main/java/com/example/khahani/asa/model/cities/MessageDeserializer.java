@@ -17,8 +17,6 @@ public class MessageDeserializer implements JsonDeserializer<Message> {
     @Override
     public Message deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-        //JsonElement theFile = jsonElement.getAsJsonObject().get(mKey);
-
         return new Gson().fromJson(jsonElement, Message.class);
     }
 }
