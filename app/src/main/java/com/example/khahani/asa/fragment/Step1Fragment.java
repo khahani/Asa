@@ -70,14 +70,6 @@ public class Step1Fragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private View.OnFocusChangeListener mOnFocusChangeListenerFromDate = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (mListener != null) {
-                //mListener.pickFromDate(v);
-            }
-        }
-    };
     private View.OnClickListener mOnClickListenerFromDate = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -134,8 +126,6 @@ public class Step1Fragment extends Fragment {
         mBinding.spinnerNumberNights.setAdapter(adapter);
         mBinding.spinnerNumberNights.setOnItemSelectedListener(mOnItemSelectedListener);
 
-
-        mBinding.editTextFromDate.setOnFocusChangeListener(mOnFocusChangeListenerFromDate);
         mBinding.editTextFromDate.setOnClickListener(mOnClickListenerFromDate);
 
         return mBinding.getRoot();
