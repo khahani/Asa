@@ -5,6 +5,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.khahani.asa.AsaActivity;
@@ -35,23 +36,15 @@ public class MainActivity extends AsaActivity implements Step1Fragment.OnFragmen
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    DatePickerDialog.OnDateSetListener onDateSetListener =
-            new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                    String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
-                    Toast.makeText(MainActivity.this, date, Toast.LENGTH_SHORT).show();
-                }
-            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         init();
 
-       // testDatePicker();
+
+        // testDatePicker();
 
 //        testService();
 
@@ -61,9 +54,16 @@ public class MainActivity extends AsaActivity implements Step1Fragment.OnFragmen
 
     private void step1() {
 
-        Step1Fragment fragment = new Step1Fragment();
-        fragmentTransaction.add(R.id.fragmentContainer, fragment);
+        step1Fragment = new Step1Fragment();
+        fragmentTransaction.add(R.id.fragmentContainer, step1Fragment);
         fragmentTransaction.commit();
+
+        onDateSetListener = (datePickerDialog, year, monthOfYear, dayOfMonth) -> {
+            String selectedDate = "" + year + "/" + monthOfYear + "/" + dayOfMonth;
+            Log.d(TAG, selectedDate);
+            step1Fragment.updateEditTextFromDate(selectedDate);
+        };
+        datePickerDialog.setOnDateSetListener(onDateSetListener);
 
     }
 
@@ -115,19 +115,9 @@ public class MainActivity extends AsaActivity implements Step1Fragment.OnFragmen
         });
     }
 
-    private void testDatePicker() {
-        PersianCalendar persianCalendar = new PersianCalendar();
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                onDateSetListener,
-                persianCalendar.getPersianYear(),
-                persianCalendar.getPersianMonth(),
-                persianCalendar.getPersianDay()
-        );
-        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
-    }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void pickFromDate(View view) {
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 }
