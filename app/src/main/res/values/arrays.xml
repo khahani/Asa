@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="number_nights">
+        <item>1 شب</item>
+        <item>2 شب</item>
+        <item>3 شب</item>
+        <item>4 شب</item>
+        <item>5 شب</item>
+        <item>6 شب</item>
+        <item>7 شب</item>
+        <item>8 شب</item>
+        <item>9 شب</item>
+        <item>10 شب</item>
+    </string-array>
+</resources>
