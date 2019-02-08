@@ -27,8 +27,9 @@ public class Step1FragmentViewModel {
         PersianCalendar calendar = new PersianCalendar();
         calendar.parse(fromDate);
 
-        int v = calendar.get(1);
+        calendar.addPersianDate(PersianCalendar.DAY_OF_MONTH,
+                Integer.parseInt(numberNights));
 
-        return "";
+        return calendar.getPersianYear() + "/" + calendar.getPersianMonth() + "/" + calendar.getPersianDay();
     }
 }
