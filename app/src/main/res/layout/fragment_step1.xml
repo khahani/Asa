@@ -1,0 +1,48 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.khahani.asa.fragment.Step1Fragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="از تاریخ" />
+
+        <EditText
+            android:id="@+id/editTextFromDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="تاریخ رزرو خود را از تقویم انتخاب کنید"
+            android:inputType="date" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="به مدت" />
+
+        <Spinner
+            android:id="@+id/spinnerNumberNights"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="تا تاریخ" />
+
+        <EditText
+            android:id="@+id/editTextToDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="تاریخ پایان رزرو خود را مشخص کنید"
+            android:inputType="date" />
+
+
+    </LinearLayout>
+
+</layout>
