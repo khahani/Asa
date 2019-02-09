@@ -2,6 +2,7 @@ package com.example.khahani.asa.ret;
 
 
 import com.example.khahani.asa.model.cities.CitiesResponse;
+import com.example.khahani.asa.model.hotels.HotelsResponse;
 
 import java.util.List;
 
@@ -22,6 +23,16 @@ public interface ApiService {
 
     @GET("cities")
     Call<CitiesResponse> getCities(
+            @Query("access_key_id") String access_key_id,
+            @Query("signature") String signature,
+            @Query("version") String version,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("from_time_stamp") String from_time_stamp,
+            @Query("id_city") String id_city,
+            @Query("id_hotel") String id_hotel);
+
+    @GET("hotels")
+    Call<HotelsResponse> getHotels(
             @Query("access_key_id") String access_key_id,
             @Query("signature") String signature,
             @Query("version") String version,
