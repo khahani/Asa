@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.khahani.asa.R;
-import com.example.khahani.asa.model.hotels.Message;
+import com.example.khahani.asa.model.hotels_date.Message;
 
 import java.util.List;
 

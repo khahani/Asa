@@ -1,8 +1,5 @@
 package com.example.khahani.asa.model.hotels;
 
-import com.example.khahani.asa.model.cities.CitiesResponse;
-import com.example.khahani.asa.model.cities.MessageDeserializer;
-import com.example.khahani.asa.model.hotels.Message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;

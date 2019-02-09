@@ -21,7 +21,6 @@ public class Asa {
             String secret = accessKeyId;
             String message = "";
 
-
             for (int i = 0; i < signParams.length; i++) {
                 message += signParams[i];
 

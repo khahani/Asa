@@ -4,6 +4,7 @@ package com.example.khahani.asa.ret;
 import com.example.khahani.asa.model.capacities.CapacitiesResponse;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
+import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 
 import java.util.List;
@@ -43,14 +44,14 @@ public interface ApiService {
             @Query("id_city") String id_city,
             @Query("id_hotel") String id_hotel);
 
-//    @GET("roomkinds")
-//    Call<RoomkindsResponse> getRoomkinds(
-//            @Query("access_key_id") String access_key_id,
-//            @Query("signature") String signature,
-//            @Query("version") String version,
-//            @Query("client_time_stamp") String client_time_stamp,
-//            @Query("from_time_stamp") String from_time_stamp,
-//            @Query("id_hotel") String id_hotel);
+    @GET("roomkinds")
+    Call<RoomkindsResponse> getRoomkinds(
+            @Query("access_key_id") String access_key_id,
+            @Query("version") String version,
+            @Query("signature") String signature,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("from_time_stamp") String from_time_stamp,
+            @Query("id_hotel") String id_hotel);
 
     @GET("capacities")
     Call<CapacitiesResponse> getCapacities(
@@ -64,6 +65,18 @@ public interface ApiService {
             @Query("from_date") String from_date,
             @Query("to_date") String to_date,
             @Query("from_time_stamp") String from_time_stamp);
+
+    @GET("hotels_date")
+    Call<HotelsDateResponse> getHotelsDate(
+            @Query("access_key_id") String access_key_id,
+            @Query("signature") String signature,
+            @Query("version") String version,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("from_time_stamp") String from_time_stamp,
+            @Query("id_city") String id_city,
+            @Query("id_hotel") String id_hotel,
+            @Query("from_date") String from_date,
+            @Query("to_date") String to_date);
 
 
 }

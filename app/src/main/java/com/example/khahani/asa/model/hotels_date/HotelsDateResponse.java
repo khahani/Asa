@@ -1,12 +1,13 @@
-package com.example.khahani.asa.model.roomkinds;
+package com.example.khahani.asa.model.hotels_date;
 
+import com.example.khahani.asa.model.hotels_date.MessageDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class RoomkindsResponse {
+public class HotelsDateResponse {
     @SerializedName("no")
     public String no;
     @SerializedName("type")
@@ -35,10 +36,10 @@ public class RoomkindsResponse {
         return gson.toJson(this);
     }
 
-    public static RoomkindsResponse fromJson(String json){
+    public static HotelsDateResponse fromJson(String json){
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(MessageDeserializer.class, new MessageDeserializer("message"));
         Gson gson = builder.create();
-        return gson.fromJson(json, RoomkindsResponse.class);
+        return gson.fromJson(json, HotelsDateResponse.class);
     }
 }

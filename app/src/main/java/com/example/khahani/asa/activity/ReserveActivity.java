@@ -18,6 +18,7 @@ import com.example.khahani.asa.model.capacities.CapacitiesResponse;
 import com.example.khahani.asa.model.capacities.Message;
 import com.example.khahani.asa.model.capacities.MessageDeserializer;
 import com.example.khahani.asa.ret.ApiService;
+import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -77,65 +78,14 @@ implements ReserveRoomFragment.OnListFragmentInteractionListener{
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .addInterceptor(chain -> {
-                    Request request = chain.request();
-                    String string = request.url().toString();
-                    string = string.replace("%25", "%");
-                    string = string.replace("%2B", "+");
-                    Request newRequest = new Request.Builder()
-                            .url(string)
-                            .build();
-                    return chain.proceed(newRequest);
-                })
-                .build();
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Message.class, new MessageDeserializer("message"))
-                .disableHtmlEscaping()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(ApiService.ASA_URL)
-                .client(client)
-                .build();
-
-        ApiService service = retrofit.create(ApiService.class);
-
         loading.setVisibility(View.VISIBLE);
 
-        String to_date = Asa.getToDate(from_date, night_numbers);
-        from_date=Asa.getMiladiDate(from_date);
-        to_date = Asa.getMiladiDate(to_date);
-//        night_numbers="3";
-//        id_city = "0";
-//        id_hotel="697";
-        String id_roomkind = "0";
-
-        String[] params = {"id_city",id_city,
-                "id_hotel",id_hotel,
-                "id_roomkind",id_roomkind,
-                "from_date",from_date,
-//                "to_date",Asa.getToDate(from_date, night_numbers),
-                "to_date", to_date,
-                "from_time_stamp","0000-00-00+00%3A00%3A00"};
-
-        service.getCapacities("demo",
-                Asa.getSigniture("demo", params),
-                "6",
-                "0000-00-00+00%3A00%3A00",
-                id_city,
+        AsaService.getCapacities(id_city,
                 id_hotel,
-                id_roomkind,
                 from_date,
-//                Asa.getToDate(from_date, night_numbers)
-                to_date,
-                "0000-00-00+00%3A00%3A00"
-        ).enqueue(callbackCapacities);
+                night_numbers,
+                callbackCapacities);
+
 
     }
 
@@ -143,11 +93,14 @@ implements ReserveRoomFragment.OnListFragmentInteractionListener{
         @Override
         public void onResponse(Call<CapacitiesResponse> call, Response<CapacitiesResponse> response) {
             Log.d(TAG, "onResponse: " + response.body().toString());
+            loading.setVisibility(View.INVISIBLE);
+
             reserveRoomFragment.updateReserveRoom(response.body().message);
         }
 
         @Override
         public void onFailure(Call<CapacitiesResponse> call, Throwable t) {
+            loading.setVisibility(View.INVISIBLE);
             Log.d(TAG, "onFailure: " + t.getMessage(), t);
         }
     };
