@@ -3,4 +3,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_reserve">رزرو %1$s</string>
+    <string name="title_room_reserve">رزور اتاق</string>
+    <string name="title_personal_info">مشخصات فردی</string>
+    <string name="title_review_and_payment">تایید نهایی</string>
 </resources>

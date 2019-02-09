@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_reserver_room"
+        android:icon="@drawable/ic_reserver_room"
+        android:title="@string/title_room_reserve" />
+
+    <item
+        android:id="@+id/navigation_personal_info"
+        android:icon="@drawable/ic_personal_info"
+        android:title="@string/title_personal_info" />
+
+    <item
+        android:id="@+id/navigation_review_and_payment"
+        android:icon="@drawable/ic_review_and_payment"
+        android:title="@string/title_review_and_payment" />
+
+</menu>

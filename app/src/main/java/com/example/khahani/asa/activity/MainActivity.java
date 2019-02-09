@@ -1,5 +1,6 @@
 package com.example.khahani.asa.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +20,10 @@ import com.example.khahani.asa.ret.ApiService;
 import com.example.khahani.asa.utils.Asa;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -36,7 +40,6 @@ public class MainActivity extends AsaActivity
 HotelFragment.OnListFragmentInteractionListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private ProgressBar loading;
 
     private String id_city;
     private String from_date;
@@ -109,6 +112,8 @@ HotelFragment.OnListFragmentInteractionListener{
 
         ApiService service = retrofit.create(ApiService.class);
 
+
+
         String[] params = {"from_time_stamp", "0000-00-00+00%3A00%3A00",
                 "id_city", id_city, "id_hotel", "0"};
 
@@ -143,8 +148,14 @@ HotelFragment.OnListFragmentInteractionListener{
     };
 
     @Override
-    public void onListFragmentInteraction(com.example.khahani.asa.model.hotels.Message item) {
-
+    public void onListFragmentInteraction(com.example.khahani.asa.model.hotels.Message hotel) {
+        Intent intent = new Intent(MainActivity.this, ReserveActivity.class);
+        intent.putExtra("hotel_persian_name", hotel.persian_name);
+        intent.putExtra("id_hotel", hotel.id);
+        intent.putExtra("id_city", id_city);
+        intent.putExtra("from_date", from_date);
+        intent.putExtra("night_numbers", night_numbers);
+        startActivity(intent);
     }
 
     /*      Step2 End      */

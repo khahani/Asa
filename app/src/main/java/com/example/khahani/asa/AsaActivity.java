@@ -7,9 +7,12 @@ import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.khahani.asa.fragment.CityFragment;
 import com.example.khahani.asa.fragment.HotelFragment;
+import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.Step1Fragment;
 import com.example.khahani.asa.fragment.Step1FragmentViewModel;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
@@ -18,6 +21,8 @@ import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AsaActivity extends AppCompatActivity {
+
+    protected ProgressBar loading;
 
     protected FragmentManager fragmentManager;
     protected FragmentTransaction fragmentTransaction;
@@ -32,6 +37,8 @@ public class AsaActivity extends AppCompatActivity {
     protected Step1Fragment step1Fragment;
     protected CityFragment cityFragment;
     protected HotelFragment hotelFragment;
+
+    protected ReserveRoomFragment reserveRoomFragment;
 
     protected void init(){
 
@@ -48,6 +55,8 @@ public class AsaActivity extends AppCompatActivity {
 
         datePickerDialog.setOnCancelListener(onDateCancelListener);
         datePickerDialog.setOnDismissListener(onDateDismissListener);
+
+        loading.setVisibility(View.INVISIBLE);
     }
 
     @Override
