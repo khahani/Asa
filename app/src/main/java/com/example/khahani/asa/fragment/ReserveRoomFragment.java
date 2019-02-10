@@ -31,6 +31,8 @@ public class ReserveRoomFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
+    private List<com.example.khahani.asa.model.roomkinds.Message> mRoomkinds;
+    private ReserveRoomRecyclerViewAdapter mReserveRoomRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -72,13 +74,12 @@ public class ReserveRoomFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-
         }
         return view;
     }
 
-    public void updateReserveRoom(List<Message> rooms){
-        recyclerView.setAdapter(new ReserveRoomRecyclerViewAdapter(rooms, mListener));
+    public void updateCapacities(List<Message> capacities, List<com.example.khahani.asa.model.roomkinds.Message> roomkinds){
+        recyclerView.setAdapter(new ReserveRoomRecyclerViewAdapter(capacities,roomkinds, mListener));
     }
 
     @Override

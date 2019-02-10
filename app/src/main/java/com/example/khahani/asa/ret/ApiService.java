@@ -47,8 +47,8 @@ public interface ApiService {
     @GET("roomkinds")
     Call<RoomkindsResponse> getRoomkinds(
             @Query("access_key_id") String access_key_id,
-            @Query("version") String version,
             @Query("signature") String signature,
+            @Query("version") String version,
             @Query("client_time_stamp") String client_time_stamp,
             @Query("from_time_stamp") String from_time_stamp,
             @Query("id_hotel") String id_hotel);

@@ -7,4 +7,5 @@
     <string name="title_room_reserve">رزور اتاق</string>
     <string name="title_personal_info">مشخصات فردی</string>
     <string name="title_review_and_payment">تایید نهایی</string>
+    <string name="titleRoomCapacity">ظرفیت اتاق: %1$s</string>
 </resources>

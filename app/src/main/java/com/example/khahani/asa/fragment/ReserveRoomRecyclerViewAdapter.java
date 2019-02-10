@@ -1,5 +1,6 @@
 package com.example.khahani.asa.fragment;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,16 +21,20 @@ import java.util.List;
  */
 public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<ReserveRoomRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Message> mValues;
+    private final List<Message> mCapacities;
     private final OnListFragmentInteractionListener mListener;
+    private final List<com.example.khahani.asa.model.roomkinds.Message> mRoomkinds;
+    private Context mContext;
 
-    public ReserveRoomRecyclerViewAdapter(List<Message> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public ReserveRoomRecyclerViewAdapter(List<Message> capacities, List<com.example.khahani.asa.model.roomkinds.Message> mRoomkinds, OnListFragmentInteractionListener listener) {
+        mCapacities = capacities;
+        this.mRoomkinds = mRoomkinds;
         mListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_reserveroom, parent, false);
         return new ViewHolder(view);
@@ -37,9 +42,16 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).room_availibility);
-        holder.mContentView.setText(mValues.get(position).iranian_date);
+        holder.mCapacity = mCapacities.get(position);
+
+        for (int i = 0; i < mRoomkinds.size(); i++) {
+            if (mCapacities.get(position).room_kind_id.equals(mRoomkinds.get(i).id)) {
+                holder.mRoomkind = mRoomkinds.get(i);
+                break;
+            }
+        }
+
+        holder.mTitleRoomCapcity.setText(mContext.getResources().getString(R.string.titleRoomCapacity, holder.mRoomkind.room_kind_bed));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +59,7 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mCapacity);
                 }
             }
         });
@@ -55,25 +67,27 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mCapacities.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public Message mItem;
+        public final TextView mTitleRoomCapcity;
+//        public final TextView mContentView;
+        public Message mCapacity;
+        public com.example.khahani.asa.model.roomkinds.Message mRoomkind;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mTitleRoomCapcity = (TextView) view.findViewById(R.id.textViewTitleRoomCapacity);
+//            mContentView = (TextView) view.findViewById(R.id.content);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '"  + "'";
         }
     }
 }
