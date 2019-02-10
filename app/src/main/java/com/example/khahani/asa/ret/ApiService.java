@@ -66,7 +66,7 @@ public interface ApiService {
             @Query("to_date") String to_date,
             @Query("from_time_stamp") String from_time_stamp);
 
-    @GET("hotels_date")
+    @GET("hotels-date")
     Call<HotelsDateResponse> getHotelsDate(
             @Query("access_key_id") String access_key_id,
             @Query("signature") String signature,

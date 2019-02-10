@@ -1,5 +1,7 @@
 package com.example.khahani.asa.ret;
 
+import android.util.Log;
+
 import com.example.khahani.asa.model.capacities.CapacitiesResponse;
 import com.example.khahani.asa.model.capacities.Message;
 import com.example.khahani.asa.model.capacities.MessageDeserializer;
@@ -221,7 +223,11 @@ public class AsaService {
                     Request request = chain.request();
                     String string = request.url().toString();
                     string = string.replace("%25", "%");
-                    string = string.replace("%2B", "+");
+//                    string = string.replace("%2B", "+");
+
+                    string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
+
+                    Log.d("TAG", "getHotelsDate: " + string);
                     Request newRequest = new Request.Builder()
                             .url(string)
                             .build();
