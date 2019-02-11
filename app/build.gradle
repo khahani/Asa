@@ -57,5 +57,6 @@ dependencies {
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
     //    implementation 'com.mohamadamin:persianmaterialdatetimepicker:1.2.1'
     implementation project(':persianmaterialdatetimepicker')
-
+    implementation files('libs/PaxGLPage_V1.00.04_20170420.jar')
+    implementation files('libs/PaxNeptuneLiteApi_V2.01.00_20171025.jar')
 }
