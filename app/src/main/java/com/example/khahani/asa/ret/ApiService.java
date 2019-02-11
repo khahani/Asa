@@ -20,6 +20,9 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+//dynamic response
+//https://stackoverflow.com/questions/24279245/how-to-handle-dynamic-json-in-retrofit
+
 public interface ApiService {
 
     public static final String ASA_URL = "https://api.asacrs.com/asacrs/api/";

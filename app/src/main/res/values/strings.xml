@@ -8,4 +8,8 @@
     <string name="title_personal_info">مشخصات فردی</string>
     <string name="title_review_and_payment">تایید نهایی</string>
     <string name="titleRoomCapacity">ظرفیت اتاق: %1$s</string>
+    <string name="titleRoomExtraCapacity">ظرفیت اضافی اتاق: %1$s</string>
+    <string name="titleFixedBoardRate" >%1$s ریال</string>
+    <string name="titleFixedExtraBoardRate" >تخت اضافه %1$s ریال</string>
+    <string name="titleFixedChildBoardRate" >نیم بها (کودک) %1$s ریال</string>
 </resources>

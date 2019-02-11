@@ -39,6 +39,9 @@ public class AsaService {
                     String string = request.url().toString();
                     string = string.replace("%25", "%");
                     string = string.replace("%2B", "+");
+
+                    Log.d("TAG", "getCapacities: " + string);
+
                     Request newRequest = new Request.Builder()
                             .url(string)
                             .build();
@@ -138,6 +141,9 @@ public class AsaService {
                     String string = request.url().toString();
                     string = string.replace("%25", "%");
                     string = string.replace("%2B", "+");
+
+                    Log.d("TAG", "getCities: " + string);
+
                     Request newRequest = new Request.Builder()
                             .url(string)
                             .build();
@@ -180,6 +186,9 @@ public class AsaService {
                     String string = request.url().toString();
                     string = string.replace("%25", "%");
                     string = string.replace("%2B", "+");
+
+                    Log.d("TAG", "getRoomkind: " + string);
+
                     Request newRequest = new Request.Builder()
                             .url(string)
                             .build();

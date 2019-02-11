@@ -49,52 +49,52 @@ public class PaymentActivity extends AppCompatActivity
         }
 
         paymentButton.setOnClickListener(v -> {
-            try {
-                Bundle data = new Bundle();
-
-                data.putString("RRN","726122996185");
-                data.putString("TransDate","20170912");
-                data.putString("TraceNo","996185");
-                data.putString("Issuer","شهر");
-                data.putString("MaskedPan","603765***4056");
-                data.putString("Amount","1000");
-                data.putString("Lang","FA");
-                data.putString("Currency","IRR");
-
-                data.putString("VoucherSerial","123123123123");
-
-                data.putString("BillId","887977897789");
-                data.putString("BillPayId","7601200");
-
-
-                PahpatHelper.printReceipt(
-                        PaymentActivity.this ,
-                        receiverHandler ,
-                        1 , //1: purchase , 6: voucher , 7: bill
-                        data
-                );
-            } catch (PahpatHelper.PahpatException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Bundle data = new Bundle();
+//
+//                data.putString("RRN","726122996185");
+//                data.putString("TransDate","20170912");
+//                data.putString("TraceNo","996185");
+//                data.putString("Issuer","شهر");
+//                data.putString("MaskedPan","603765***4056");
+//                data.putString("Amount","1000");
+//                data.putString("Lang","FA");
+//                data.putString("Currency","IRR");
+//
+//                data.putString("VoucherSerial","123123123123");
+//
+//                data.putString("BillId","887977897789");
+//                data.putString("BillPayId","7601200");
+//
+//
+//                PahpatHelper.printReceipt(
+//                        PaymentActivity.this ,
+//                        receiverHandler ,
+//                        1 , //1: purchase , 6: voucher , 7: bill
+//                        data
+//                );
+//            } catch (PahpatHelper.PahpatException e) {
+//                e.printStackTrace();
+//            }
 
             /**
              * Attention ::
              * For call this intent you need use permission in android manifest like below :
              * <uses-permission android:name="com.tosantechno.pahpat.permission.PAYMENT_SERVICE" />
              */
-//            Intent paymentIntent = new Intent("com.tosantechno.pahpat.DO_PAYMENT");
-//
-//            String amount = "1000";
-//
-//
-//            if(!amount.equals(""))
-//            {
-//                try {
-//                    PahpatHelper.purchaseTxn(PaymentActivity.this,receiverHandler,amount,"09353391873","123","IRR","FA");
-//                } catch (PahpatHelper.PahpatException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            Intent paymentIntent = new Intent("com.tosantechno.pahpat.DO_PAYMENT");
+
+            String amount = "1000";
+
+
+            if(!amount.equals(""))
+            {
+                try {
+                    PahpatHelper.purchaseTxn(PaymentActivity.this,receiverHandler,amount,"09353391873","123","IRR","FA");
+                } catch (PahpatHelper.PahpatException e) {
+                    e.printStackTrace();
+                }
+            }
         });
     }
 

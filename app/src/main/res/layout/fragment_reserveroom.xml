@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layoutDirection="rtl"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp">
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="8dp"
+    android:layoutDirection="rtl">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,27 +17,160 @@
             android:id="@+id/textViewTitleRoomCapacity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="ظرفیت اتاق: 2"
-            android:text="@string/titleRoomCapacity"
-            android:layout_marginTop="4dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/titleRoomCapacity"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            tools:text="ظرفیت اتاق: 2" />
+
+        <TextView
+            android:id="@+id/textViewTitleRoomExtraCapacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/titleRoomExtraCapacity"
+            app:layout_constraintStart_toEndOf="@id/textViewTitleRoomCapacity"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="ظرفیت اضافی اتاق: 2" />
+
+        <TextView
+            android:id="@+id/textViewTitleRoomkindName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/titleRoomExtraCapacity"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewTitleRoomCapacity"
+            tools:text="دبل" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupFood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewTitleRoomkindName">
+
+            <RadioButton
+                android:id="@+id/radioButtonBreakfastRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="صبحانه" />
+
+            <RadioButton
+                android:id="@+id/radioButtonFullBoardRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="صبحانه، ناهار و شام" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textViewFixedBoardRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/titleFixedBoardRate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radioGroupFood"
+            tools:text="970000 ریال" />
+
+        <TextView
+            android:id="@+id/textViewFixedBoardRateWithOff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/titleFixedBoardRate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFixedBoardRate"
+            tools:text="970000 ریال" />
+
+        <TextView
+            android:id="@+id/textViewFixedExtraBoardRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/titleFixedExtraBoardRate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFixedBoardRateWithOff"
+            tools:text="تخت اضافه 970000 ریال" />
+
+        <TextView
+            android:id="@+id/textViewFixedChildBoardRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/titleFixedExtraBoardRate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFixedExtraBoardRate"
+            tools:text="نیم بها (کودک) 970000 ریال" />
 
 
+        <LinearLayout
+            android:id="@+id/linearLayoutSpinners"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFixedChildBoardRate">
 
-        <!--<TextView-->
-            <!--android:id="@+id/item_number"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="@dimen/text_margin"-->
-            <!--android:textAppearance="?attr/textAppearanceListItem" />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="اتاق ها"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="بزرگسال"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="کودک (2-6)"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
-        <!--<TextView-->
-            <!--android:id="@+id/content"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="@dimen/text_margin"-->
-            <!--android:textAppearance="?attr/textAppearanceListItem" />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinnerRoomsCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:spinnerMode="dialog" />
+
+                <Spinner
+                    android:id="@+id/spinnerAdultsCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:spinnerMode="dialog" />
+
+                <Spinner
+                    android:id="@+id/spinnerChildsCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:spinnerMode="dialog" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

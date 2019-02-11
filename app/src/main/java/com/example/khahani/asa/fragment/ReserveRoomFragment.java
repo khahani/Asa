@@ -78,8 +78,12 @@ public class ReserveRoomFragment extends Fragment {
         return view;
     }
 
-    public void updateCapacities(List<Message> capacities, List<com.example.khahani.asa.model.roomkinds.Message> roomkinds){
-        recyclerView.setAdapter(new ReserveRoomRecyclerViewAdapter(capacities,roomkinds, mListener));
+    public void updateCapacities(List<Message> capacities,
+                                 List<com.example.khahani.asa.model.roomkinds.Message> roomkinds){
+
+        List<ReserveRoomViewModel> viewModel = ReserveRoomViewModel.fromCapacities(capacities);
+
+        recyclerView.setAdapter(new ReserveRoomRecyclerViewAdapter(capacities,roomkinds, viewModel, mListener));
     }
 
     @Override
