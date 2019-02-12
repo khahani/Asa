@@ -9,7 +9,19 @@
     <string name="title_review_and_payment">تایید نهایی</string>
     <string name="titleRoomCapacity">ظرفیت اتاق: %1$s</string>
     <string name="titleRoomExtraCapacity">ظرفیت اضافی اتاق: %1$s</string>
-    <string name="titleFixedBoardRate" >%1$s ریال</string>
-    <string name="titleFixedExtraBoardRate" >تخت اضافه %1$s ریال</string>
-    <string name="titleFixedChildBoardRate" >نیم بها (کودک) %1$s ریال</string>
+    <string name="titleFixedBoardRate">%1$s ریال</string>
+    <string name="titleFixedExtraBoardRate">تخت اضافه %1$s ریال</string>
+    <string name="titleFixedChildBoardRate">نیم بها (کودک) %1$s ریال</string>
+    <string name="title_menu_calc_price">نمایش جزئیات</string>
+
+    <string name="textViewCalcTotalPrice">هزینه اتاق ها: %1$s ریال</string>
+    <string name="textViewCalcRooms">تعداد اتاق ها: %1$s</string>
+    <string name="textViewCalcAdults">تعداد بزرگسال: %1$s</string>
+    <string name="textViewCalcChilds">تعداد کودک: %1$s</string>
+    <string name="textViewCalcExtraBeds">تعداد تخت اضافه: %1$s</string>
+    <string name="textViewCalcNightNumbers">مدت اقامت: %1$s</string>
+    <string name="textViewCalcStartDate">تاریخ ورود: %1$s</string>
+    <string name="textViewCalcEndDate">تاریخ خروج: %1$s</string>
+    <string name="textViewCalcDiscount">تخفیف: %1$s ریال</string>
+    <string name="textViewCalcMustPay">جمع کل: %1$s ریال</string>
 </resources>

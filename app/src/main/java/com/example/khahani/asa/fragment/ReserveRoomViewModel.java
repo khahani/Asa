@@ -15,6 +15,9 @@ public class ReserveRoomViewModel {
     public List<String> iranian_daily_board_rate;
     public List<String> iranian_extra_bed_rate;
     public List<String> iranian_child_rate;
+    public int selectedRoomsCount;
+    public int selectedAdultsCount;
+    public int selectedChildsCount;
 
     public ReserveRoomViewModel(){
         iranian_date = new ArrayList<>();

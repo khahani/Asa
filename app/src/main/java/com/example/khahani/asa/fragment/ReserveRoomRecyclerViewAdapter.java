@@ -15,7 +15,6 @@ import com.example.khahani.asa.R;
 import com.example.khahani.asa.fragment.ReserveRoomFragment.OnListFragmentInteractionListener;
 import com.example.khahani.asa.fragment.dummy.DummyContent.DummyItem;
 import com.example.khahani.asa.model.capacities.Message;
-import com.example.khahani.asa.utils.ExpandOrCollapseView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,17 +27,15 @@ import java.util.List;
  */
 public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<ReserveRoomRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Message> mCapacities;
+
     private final OnListFragmentInteractionListener mListener;
     private final List<com.example.khahani.asa.model.roomkinds.Message> mRoomkinds;
     private final List<ReserveRoomViewModel> viewModels;
     private Context mContext;
 
-    public ReserveRoomRecyclerViewAdapter(List<Message> capacities,
-                                          List<com.example.khahani.asa.model.roomkinds.Message> mRoomkinds,
+    public ReserveRoomRecyclerViewAdapter(List<com.example.khahani.asa.model.roomkinds.Message> mRoomkinds,
                                           List<ReserveRoomViewModel> viewModels,
                                           OnListFragmentInteractionListener listener) {
-        mCapacities = capacities;
         this.mRoomkinds = mRoomkinds;
         this.viewModels = viewModels;
         mListener = listener;
@@ -103,7 +100,9 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         holder.mSpinnerRoomsCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.selectedRoomsCount = position;
+                holder.mReserveRoomViewModel.selectedRoomsCount = position;
+                holder.mReserveRoomViewModel.selectedAdultsCount = 0;
+                holder.mReserveRoomViewModel.selectedChildsCount = 0;
                 updateSpinnersAdults(holder);
             }
 
@@ -116,8 +115,21 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         holder.mSpinnerAdultsCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.selectedAdultCount= position;
+                holder.mReserveRoomViewModel.selectedAdultsCount= position;
+                holder.mReserveRoomViewModel.selectedChildsCount = 0;
                 updateSpinnerChilds(holder);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        holder.mSpinnerChildsCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                holder.mReserveRoomViewModel.selectedChildsCount = position;
             }
 
             @Override
@@ -143,6 +155,12 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         });
     }
 
+    private void calcPrice(){
+        if(mListener != null){
+            mListener.onCalcPrice(viewModels);
+        }
+    }
+
     private void updateSpinnerRooms(ViewHolder holder){
         /*      Spinner Rooms start  */
 
@@ -164,8 +182,8 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
 
     private void updateSpinnerChilds(ViewHolder holder) {
 
-        int selectedRoomCount = holder.selectedRoomsCount;
-        int selectedAdultCount = holder.selectedAdultCount;
+        int selectedRoomCount = holder.mReserveRoomViewModel.selectedRoomsCount;
+        int selectedAdultCount = holder.mReserveRoomViewModel.selectedAdultsCount;
 
         int maxRoomCapacity = Integer.parseInt(holder.mRoomkind.extra_bed) +
                 Integer.parseInt(holder.mRoomkind.room_kind_bed);
@@ -198,7 +216,7 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
 
     private void updateSpinnersAdults(ViewHolder holder) {
 
-        int selectedRoomCount = holder.selectedRoomsCount;
+        int selectedRoomCount = holder.mReserveRoomViewModel.selectedRoomsCount;
 
         int maxRoomCapacity = Integer.parseInt(holder.mRoomkind.extra_bed) +
                 Integer.parseInt(holder.mRoomkind.room_kind_bed);
@@ -227,6 +245,10 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         return viewModels.size();
     }
 
+    public List<ReserveRoomViewModel> getModel() {
+        return viewModels;
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
@@ -241,9 +263,6 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         public final Spinner mSpinnerAdultsCount;
         public final Spinner mSpinnerChildsCount;
 
-        public int selectedRoomsCount;
-        public int selectedAdultCount;
-        public int selectedChildCount;
 
         //    public final TextView mContentView;
         public Message mCapacity;

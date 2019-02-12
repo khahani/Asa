@@ -83,7 +83,9 @@ public class ReserveRoomFragment extends Fragment {
 
         List<ReserveRoomViewModel> viewModel = ReserveRoomViewModel.fromCapacities(capacities);
 
-        recyclerView.setAdapter(new ReserveRoomRecyclerViewAdapter(capacities,roomkinds, viewModel, mListener));
+        mReserveRoomRecyclerViewAdapter = new ReserveRoomRecyclerViewAdapter(roomkinds, viewModel, mListener);
+
+        recyclerView.setAdapter(mReserveRoomRecyclerViewAdapter);
     }
 
     @Override
@@ -103,6 +105,10 @@ public class ReserveRoomFragment extends Fragment {
         mListener = null;
     }
 
+    public List<ReserveRoomViewModel> getModel() {
+        return mReserveRoomRecyclerViewAdapter.getModel();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -114,7 +120,8 @@ public class ReserveRoomFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onListFragmentInteraction(Message item);
+        void onCalcPrice(List<ReserveRoomViewModel> model);
     }
 }

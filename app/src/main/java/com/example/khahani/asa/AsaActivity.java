@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.CityFragment;
 import com.example.khahani.asa.fragment.HotelFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
@@ -38,9 +39,11 @@ public class AsaActivity extends AppCompatActivity {
     protected CityFragment cityFragment;
     protected HotelFragment hotelFragment;
 
-    protected ReserveRoomFragment reserveRoomFragment;
 
-    protected void init(){
+    protected ReserveRoomFragment reserveRoomFragment;
+    protected CalcPriceFragment calcPriceFragment;
+
+    protected void init() {
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();

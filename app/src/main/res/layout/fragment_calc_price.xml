@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.v7.widget.CardView
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        app:cardBackgroundColor="#5988DA"
+        tools:context="com.example.khahani.asa.fragment.CalcPriceFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/textViewCalcTotalPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="هزینه اتاق ها: 0 ریال" />
+
+                <TextView
+                    android:id="@+id/textViewCalcRooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تعداد اتاق ها: 0" />
+
+                <TextView
+                    android:id="@+id/textViewCalcExtraBeds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تعداد تخت اضافه: 0" />
+
+                <TextView
+                    android:id="@+id/textViewCalcAdults"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تعداد بزرگسال: 0" />
+
+                <TextView
+                    android:id="@+id/textViewCalcChilds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تعداد کودک: 0" />
+
+                <TextView
+                    android:id="@+id/textViewCalcNightNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="مدت اقامت: 0" />
+
+                <TextView
+                    android:id="@+id/textViewCalcStartDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تاریخ ورود: 1397/01/12" />
+
+                <TextView
+                    android:id="@+id/textViewCalcEndDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تاریخ خروج: 1397/01/12" />
+
+                <TextView
+                    android:id="@+id/textViewCalcDiscount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="#fff"
+                    tools:text="تخفیف: 0" />
+
+
+                <TextView
+                    android:id="@+id/textViewCalcMustPay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#fff"
+                    android:textStyle="bold"
+                    tools:text="جمع کل: 0" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#54637E">
+
+                <Button
+                    android:id="@+id/buttonClose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="#3EC31F"
+                    android:padding="8dp"
+                    android:text="بستن"
+                    android:textColor="#fff" />
+
+            </FrameLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="#449D44"
+            android:background="@color/button_green"
             android:padding="8dp"
             android:text="رزرو هتل"
             android:textColor="#fff" />
