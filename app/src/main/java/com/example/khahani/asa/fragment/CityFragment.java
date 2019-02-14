@@ -7,14 +7,21 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.khahani.asa.R;
+import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.cities.Message;
+import com.example.khahani.asa.ret.AsaService;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A fragment representing a list of Items.
@@ -26,6 +33,7 @@ public class CityFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String TAG = CityFragment.class.getSimpleName();
     // TODO: Customize parameters
     private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
@@ -100,13 +108,46 @@ public class CityFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Message item);
+        void onLoadBegins();
+        void onLoadCompleted();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (mListener != null){
+            mListener.onLoadBegins();
+        }
 
+        AsaService.getCities("5201", "0", callbackCities);
 
     }
+
+    Callback<CitiesResponse> callbackCities = new Callback<CitiesResponse>() {
+        @Override
+        public void onResponse(Call<CitiesResponse> call, Response<CitiesResponse> response) {
+            Log.e(TAG, "onResponse: " + response.body().toJson());
+
+            if (mListener != null){
+                mListener.onLoadCompleted();
+            }
+
+            updateCities(response.body().message);
+
+
+        }
+
+        @Override
+        public void onFailure(Call<CitiesResponse> call, Throwable t) {
+            Log.e(TAG, "onFailure: error", t);
+
+            if (mListener != null){
+                mListener.onLoadCompleted();
+            }
+
+        }
+    };
+
+
 }

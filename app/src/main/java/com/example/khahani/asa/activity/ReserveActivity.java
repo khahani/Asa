@@ -1,11 +1,13 @@
 package com.example.khahani.asa.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,20 +35,30 @@ import retrofit2.Response;
 
 public class ReserveActivity extends AsaActivity
         implements ReserveRoomFragment.OnListFragmentInteractionListener,
-        CalcPriceFragment.OnFragmentInteractionListener ,
-PersonInfoFragment.OnFragmentInteractionListener{
+        CalcPriceFragment.OnFragmentInteractionListener,
+        PersonInfoFragment.OnFragmentInteractionListener {
 
     private String TAG = ReserveActivity.class.getSimpleName();
     private BottomNavigationView navigation;
-
-    private RoomkindsResponse mRoomkindsResponse;
 
     private String id_hotel;
     private String id_city;
     private String from_date;
     private String night_numbers;
 
-    private TextView mTextMessage;
+    private List<Message> mRoomkinds;
+    private List<com.example.khahani.asa.model.capacities.Message> mCapacities;
+    private List<ReserveRoomViewModel> selectedRoomDetails;
+    private int mCalcRooms;
+    private int mCalcChilds;
+    private int mCalcAdults;
+    private int mCalcExtraBeds;
+    private String mCalcStartDate;
+    private String mCalcEndDate;
+    private int mCalcDiscount;
+    private int mCalcTotalPrice;
+    private int mCalcMustPay;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,96 +73,54 @@ PersonInfoFragment.OnFragmentInteractionListener{
                 case R.id.navigation_reserver_room:
                     invalidateOptionsMenu();
 
+                    resetCalcPriceDetails();
+
                     fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.fragmentContainer, reserveRoomFragment);
-                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
 
                     return true;
                 case R.id.navigation_personal_info:
                     invalidateOptionsMenu();
 
-                    if (personInfoFragment == null){
+                    stepCalcPrice();
+
+                    if (mCalcRooms <= 0){
+
+                        AlertDialog dialog = new AlertDialog.Builder(ReserveActivity.this)
+                                .setMessage("ابتدا اطلاعات رزرو را تعیین کنید.")
+                                .setTitle("پیام سیستمی")
+                                .setPositiveButton("باشه", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .create();
+
+                        dialog.show();
+
+                        return false;
+
+                    }
+
+                    if (personInfoFragment == null) {
                         personInfoFragment = PersonInfoFragment.newInstance();
                     }
 
                     fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.fragmentContainer, personInfoFragment);
-                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
 
                     return true;
                 case R.id.navigation_review_and_payment:
                     invalidateOptionsMenu();
-                    mTextMessage.setText(R.string.title_review_and_payment);
                     return true;
             }
             return false;
         }
     };
 
-    /*          Step 0 Start    */
-    private void step0() {
-        loading.setVisibility(View.VISIBLE);
-        AsaService.getRoomkind(id_hotel, callbackRoomkinds);
-    }
-
-    private Callback<RoomkindsResponse> callbackRoomkinds = new Callback<RoomkindsResponse>() {
-        @Override
-        public void onResponse(Call<RoomkindsResponse> call, Response<RoomkindsResponse> response) {
-            loading.setVisibility(View.INVISIBLE);
-            mRoomkindsResponse = response.body();
-
-            step1();
-
-        }
-
-        @Override
-        public void onFailure(Call<RoomkindsResponse> call, Throwable t) {
-            loading.setVisibility(View.INVISIBLE);
-        }
-    };
-
-    /*          Step 0 End      */
-
-    /*          Step1 Start     */
-
-    private void step1() {
-
-        reserveRoomFragment = ReserveRoomFragment.newInstance(1);
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.
-                setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-        fragmentTransaction.replace(R.id.fragmentContainer, reserveRoomFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-
-        loading.setVisibility(View.VISIBLE);
-
-        AsaService.getCapacities(id_city,
-                id_hotel,
-                from_date,
-                night_numbers,
-                callbackCapacities);
-
-
-    }
-
-    private Callback<CapacitiesResponse> callbackCapacities = new Callback<CapacitiesResponse>() {
-        @Override
-        public void onResponse(Call<CapacitiesResponse> call, Response<CapacitiesResponse> response) {
-            Log.d(TAG, "onResponse: " + response.body().toString());
-            loading.setVisibility(View.INVISIBLE);
-
-            reserveRoomFragment.updateCapacities(response.body().message, mRoomkindsResponse.message);
-        }
-
-        @Override
-        public void onFailure(Call<CapacitiesResponse> call, Throwable t) {
-            loading.setVisibility(View.INVISIBLE);
-            Log.d(TAG, "onFailure: " + t.getMessage(), t);
-        }
-    };
 
     @Override
     public void onListFragmentInteraction(com.example.khahani.asa.model.capacities.Message item) {
@@ -166,7 +136,34 @@ PersonInfoFragment.OnFragmentInteractionListener{
 
     }
 
-    private void stepCalcPrice(){
+    @Override
+    public void onLoadBegins() {
+        loading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoadCompleted() {
+        loading.setVisibility(View.INVISIBLE);
+    }
+
+    private void resetCalcPriceDetails(){
+        mCalcRooms = 0;
+        mCalcAdults = 0;
+        mCalcChilds = 0;
+        mCalcExtraBeds = 0;
+        mCalcStartDate = from_date;
+        mCalcEndDate =Asa.getToDate(from_date, night_numbers);
+        mCalcDiscount = 0;
+        mCalcTotalPrice = 0;
+        mCalcMustPay = 0;
+    }
+
+    private void stepCalcPrice() {
+
+        resetCalcPriceDetails();
+
+        selectedRoomDetails = reserveRoomFragment.getModel();
+
         List<ReserveRoomViewModel> reserveRoomViewModels =
                 reserveRoomFragment.getModel();
 
@@ -186,7 +183,7 @@ PersonInfoFragment.OnFragmentInteractionListener{
                 continue;
 
             Message roomkind = null;
-            for (Message roomkindItem : mRoomkindsResponse.message) {
+            for (Message roomkindItem : reserveRoomFragment.getRoomkinds()) {
                 if (roomkindItem.id.equals(model.room_kind_id)) {
                     roomkind = roomkindItem;
                     break;
@@ -266,7 +263,16 @@ PersonInfoFragment.OnFragmentInteractionListener{
         Log.d(TAG, "onOptionsItemSelected: Total Price: " + calcTotalPrice);
         Log.d(TAG, "onOptionsItemSelected: Must Pay: " + (calcTotalPrice - calcDiscount));
 
-        stepShowCalcPrice(calcRooms, calcChilds, calcAdults, calcExtraBeds, calcStartDate, calcEndDate, calcDiscount, calcTotalPrice);
+        mCalcRooms = calcRooms;
+        mCalcAdults = calcAdults;
+        mCalcChilds = calcChilds;
+        mCalcExtraBeds = calcExtraBeds;
+        mCalcStartDate = calcStartDate;
+        mCalcEndDate =calcEndDate;
+        mCalcDiscount = calcDiscount;
+        mCalcTotalPrice = calcTotalPrice;
+        mCalcMustPay = calcTotalPrice - calcDiscount;
+
     }
 
     private void stepShowCalcPrice(int calcRooms, int calcChilds, int calcAdults, int calcExtraBeds, String calcStartDate, String calcEndDate, int calcDiscount, int calcTotalPrice) {
@@ -296,6 +302,7 @@ PersonInfoFragment.OnFragmentInteractionListener{
 
     /**
      * hide calcPriceFragment
+     *
      * @param uri
      */
     @Override
@@ -333,11 +340,15 @@ PersonInfoFragment.OnFragmentInteractionListener{
             night_numbers = intent.getStringExtra("night_numbers");
         }
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        step0();
+        reserveRoomFragment = ReserveRoomFragment.newInstance(
+                1, id_city, id_hotel, from_date, night_numbers);
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, reserveRoomFragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -348,12 +359,12 @@ PersonInfoFragment.OnFragmentInteractionListener{
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (Build.VERSION.SDK_INT > 11){
+        if (Build.VERSION.SDK_INT > 11) {
             invalidateOptionsMenu();
             if (navigation.getSelectedItemId() == R.id.navigation_reserver_room) {
                 menu.findItem(R.id.menu_calc_price).setVisible(true);
                 menu.findItem(R.id.menu_save_personal_info).setVisible(false);
-            }else if(navigation.getSelectedItemId() == R.id.navigation_personal_info){
+            } else if (navigation.getSelectedItemId() == R.id.navigation_personal_info) {
                 menu.findItem(R.id.menu_calc_price).setVisible(false);
                 menu.findItem(R.id.menu_save_personal_info).setVisible(true);
             }
@@ -366,6 +377,8 @@ PersonInfoFragment.OnFragmentInteractionListener{
         switch (item.getItemId()) {
             case R.id.menu_calc_price:
                 stepCalcPrice();
+                stepShowCalcPrice(mCalcRooms, mCalcChilds, mCalcAdults, mCalcExtraBeds,
+                        mCalcStartDate, mCalcEndDate, mCalcDiscount, mCalcTotalPrice);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -376,9 +389,9 @@ PersonInfoFragment.OnFragmentInteractionListener{
         super.onBackPressed();
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
-        if (count == 1) {
-            super.onBackPressed();
-            //additional code
+        if (count == 0) {
+            //super.onBackPressed();
+            finish();
         } else {
             getFragmentManager().popBackStack();
         }
@@ -386,7 +399,6 @@ PersonInfoFragment.OnFragmentInteractionListener{
 
     @Override
     public void onPersonFragmentInteraction() {
-
 
 
     }

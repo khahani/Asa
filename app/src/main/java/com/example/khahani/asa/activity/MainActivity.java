@@ -48,8 +48,6 @@ public class MainActivity extends AsaActivity
     }
 
 
-
-
     /*      Step2 Start      */
 
     private void step2() {
@@ -144,7 +142,6 @@ public class MainActivity extends AsaActivity
     /*        Step0 Start     */
     private void step0() {
 
-
         cityFragment = CityFragment.newInstance(2);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.
@@ -153,31 +150,9 @@ public class MainActivity extends AsaActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-
-        loading.setVisibility(View.VISIBLE);
-
-        AsaService.getCities("5201", "0", callbackCities);
-
     }
 
-    Callback<CitiesResponse> callbackCities = new Callback<CitiesResponse>() {
-        @Override
-        public void onResponse(Call<CitiesResponse> call, Response<CitiesResponse> response) {
-            Log.e(TAG, "onResponse: " + response.body().toJson());
 
-            loading.setVisibility(View.INVISIBLE);
-
-            cityFragment.updateCities(response.body().message);
-
-        }
-
-        @Override
-        public void onFailure(Call<CitiesResponse> call, Throwable t) {
-            Log.e(TAG, "onFailure: error", t);
-
-            loading.setVisibility(View.INVISIBLE);
-        }
-    };
 
     @Override
     public void onListFragmentInteraction(Message item) {
@@ -186,6 +161,21 @@ public class MainActivity extends AsaActivity
         step1();
     }
 
+    @Override
+    public void onLoadBegins() {
+
+        loading.setVisibility(View.VISIBLE);
+
+
+    }
+
+    @Override
+    public void onLoadCompleted() {
+        loading.setVisibility(View.INVISIBLE);
+
+    }
+
+
     /*         Step0  End      */
 
     @Override
@@ -193,13 +183,11 @@ public class MainActivity extends AsaActivity
         super.onBackPressed();
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
-        if (count == 1) {
+        if (count == 0) {
             super.onBackPressed();
             //additional code
         } else {
-            getFragmentManager().popBackStackImmediate();
-
-
+            getFragmentManager().popBackStack();
         }
     }
 }
