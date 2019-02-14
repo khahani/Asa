@@ -21,12 +21,15 @@ import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReserveRoomViewModel;
 import com.example.khahani.asa.model.capacities.CapacitiesResponse;
+import com.example.khahani.asa.model.reserve5min.Reserve1Respose;
+import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.Message;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
 import com.example.khahani.asa.utils.ExpandOrCollapseView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -104,6 +107,8 @@ public class ReserveActivity extends AsaActivity
 
                     }
 
+                    stepReserve5Min();
+
                     if (personInfoFragment == null) {
                         personInfoFragment = PersonInfoFragment.newInstance();
                     }
@@ -120,6 +125,32 @@ public class ReserveActivity extends AsaActivity
             return false;
         }
     };
+    private Callback<Reserve1Respose> callbackReserve5Min = new Callback<Reserve1Respose>() {
+        @Override
+        public void onResponse(Call<Reserve1Respose> call, Response<Reserve1Respose> response) {
+
+        }
+
+        @Override
+        public void onFailure(Call<Reserve1Respose> call, Throwable t) {
+
+        }
+    };
+
+    private void stepReserve5Min() {
+
+        List<RoomDetail> roomDetails = new ArrayList<>();
+
+        RoomDetail roomDetail = new RoomDetail();
+        roomDetail.number =
+                Integer.toString(selectedRoomDetails.get(0).selectedRoomsCount);
+        roomDetail.adult =
+                Integer.toString(selectedRoomDetails.get(0).selectedAdultsCount);
+
+
+        AsaService.postReserve5Min(id_hotel, mCalcStartDate, mCalcEndDate, roomDetails, callbackReserve5Min);
+
+    }
 
 
     @Override

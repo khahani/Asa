@@ -2,11 +2,13 @@ package com.example.khahani.asa.utils;
 
 import android.util.Log;
 
+import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -49,7 +51,7 @@ public class Asa {
         return null;
     }
 
-    public static String getMiladiDate(String persianDate){
+    public static String getMiladiDate(String persianDate) {
         PersianCalendar calendar = new PersianCalendar();
         calendar.parse(persianDate);
         Date date = calendar.getTime();
@@ -66,5 +68,46 @@ public class Asa {
         int month = calendar.getPersianMonth();
         int year = calendar.getPersianYear();
         return year + "/" + month + "/" + day;
+    }
+
+    public static String roomDetailToUrl(List<RoomDetail> roomDetails) {
+        if (roomDetails == null || roomDetails.size() <= 0) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        //room_detail[0][id_roomkind]=1&room_detail[0][number]=1
+        // &room_detail[0][adult]=1&room_detail[0][child][0]=1&room_detail[0][child][1]=1
+
+        for (int i = 0; i < roomDetails.size(); i++) {
+
+            builder.append("room_detail[" + i + "][id_roomkind]=" + roomDetails.get(i).id_roomkind);
+            builder.append("&");
+
+            builder.append("room_detail[" + i + "][number]=" + roomDetails.get(i).number);
+            builder.append("&");
+
+            builder.append("room_detail[" + i + "][adult]=" + roomDetails.get(i).adult);
+
+            if (roomDetails.get(i).child.size() > 0) {
+
+                builder.append("&");
+
+                for (int j = 0; j < roomDetails.get(i).child.size(); j++) {
+
+                    builder.append("room_detail[" + i + "][child][" + j + "]=" + roomDetails.get(i).child.get(j));
+
+                    if (j != roomDetails.get(i).child.size() - 1)
+
+                        builder.append("&");
+
+                }
+
+            }
+
+        }
+
+        return builder.toString();
     }
 }

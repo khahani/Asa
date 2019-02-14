@@ -8,6 +8,8 @@ import com.example.khahani.asa.model.capacities.MessageDeserializer;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
+import com.example.khahani.asa.model.reserve5min.Reserve1Respose;
+import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 import com.example.khahani.asa.utils.Asa;
 import com.google.gson.Gson;
@@ -15,6 +17,9 @@ import com.google.gson.GsonBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -222,6 +227,7 @@ public class AsaService {
                 id_hotel).enqueue(callbackCities);
     }
 
+
     public static void getHotelsDate(String id_city, String id_hotel,
                                      String from_date, String to_date,
                                      Callback<HotelsDateResponse> callbackHotelsDate) {
@@ -280,5 +286,70 @@ public class AsaService {
                 id_hotel,
                 from_date,
                 to_date).enqueue(callbackHotelsDate);
+    }
+
+    public static void postReserve5Min(String id_hotel,
+                                     String from_date, String to_date,
+                                     List<RoomDetail> roomDetails,
+                                     Callback<Reserve1Respose> callbackReserve5Min) {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    String string = request.url().toString();
+                    string = string.replace("%25", "%");
+//                    string = string.replace("%2B", "+");
+
+                    string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
+
+                    Log.d("TAG", "postReserve5Min: " + string);
+                    Request newRequest = new Request.Builder()
+                            .url(string)
+                            .build();
+                    return chain.proceed(newRequest);
+                })
+                .build();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(com.example.khahani.asa.model.reserve5min.Message.class,
+                        new com.example.khahani.asa.model.reserve5min.MessageDeserializer("message"))
+                .disableHtmlEscaping()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(ApiService.ASA_URL)
+                .client(client)
+                .build();
+
+        ApiService service = retrofit.create(ApiService.class);
+
+
+
+        String[] params = new String[0];
+        try {
+
+            params = new String[]{
+                    "id_hotel", id_hotel,
+                    "from_date", URLEncoder.encode(Asa.getMiladiDate(from_date), "utf-8"),
+                    "to_date", URLEncoder.encode(Asa.getMiladiDate(to_date), "utf-8"),
+                    Asa.roomDetailToUrl(roomDetails)
+            };
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        service.postReserve5Min("demo",
+                Asa.getSigniture("demo", params),
+                "6",
+                "0000-00-00+00%3A00%3A00",
+                id_hotel,
+                Asa.getMiladiDate(from_date),
+                Asa.getMiladiDate(to_date),
+                Asa.roomDetailToUrl(roomDetails)
+                ).enqueue(callbackReserve5Min);
     }
 }

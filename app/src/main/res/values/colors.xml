@@ -6,4 +6,6 @@
     <color name="duskYellow">#FFBA00</color>
     <color name="lightGrey">#D3D3D3</color>
     <color name="button_green">#449D44</color>
+    <color name="light_blue">#5988DA</color>
+    <color name="dark_blue">#54637E</color>
 </resources>
