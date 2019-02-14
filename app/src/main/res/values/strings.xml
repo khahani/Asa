@@ -24,4 +24,5 @@
     <string name="textViewCalcEndDate">تاریخ خروج: %1$s</string>
     <string name="textViewCalcDiscount">تخفیف: %1$s ریال</string>
     <string name="textViewCalcMustPay">جمع کل: %1$s ریال</string>
+    <string name="title_menu_save_personal_info">ثبت و مرحله بعد</string>
 </resources>

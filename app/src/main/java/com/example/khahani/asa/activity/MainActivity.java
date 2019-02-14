@@ -2,6 +2,9 @@ package com.example.khahani.asa.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 
@@ -146,7 +149,7 @@ public class MainActivity extends AsaActivity
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.
                 setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-        fragmentTransaction.replace(R.id.fragmentContainer, cityFragment);
+        fragmentTransaction.add(R.id.fragmentContainer, cityFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
@@ -184,4 +187,19 @@ public class MainActivity extends AsaActivity
     }
 
     /*         Step0  End      */
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 1) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStackImmediate();
+
+
+        }
+    }
 }

@@ -8,5 +8,12 @@
         android:title="@string/title_menu_calc_price"
         app:showAsAction="always|withText"/>
 
+    <item
+        android:id="@+id/menu_save_personal_info"
+        android:icon="@drawable/save_personal_info"
+        android:title="@string/title_menu_save_personal_info"
+        app:showAsAction="always|withText"
+        android:visible="false"/>
+
 
 </menu>

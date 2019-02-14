@@ -33,7 +33,8 @@ import retrofit2.Response;
 
 public class ReserveActivity extends AsaActivity
         implements ReserveRoomFragment.OnListFragmentInteractionListener,
-        CalcPriceFragment.OnFragmentInteractionListener {
+        CalcPriceFragment.OnFragmentInteractionListener ,
+PersonInfoFragment.OnFragmentInteractionListener{
 
     private String TAG = ReserveActivity.class.getSimpleName();
     private BottomNavigationView navigation;
@@ -52,13 +53,32 @@ public class ReserveActivity extends AsaActivity
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+            if (navigation.getSelectedItemId() == item.getItemId())
+                return true;
+
             switch (item.getItemId()) {
                 case R.id.navigation_reserver_room:
                     invalidateOptionsMenu();
+
+                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fragmentContainer, reserveRoomFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
                     return true;
                 case R.id.navigation_personal_info:
                     invalidateOptionsMenu();
-                    mTextMessage.setText(R.string.title_personal_info);
+
+                    if (personInfoFragment == null){
+                        personInfoFragment = PersonInfoFragment.newInstance();
+                    }
+
+                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fragmentContainer, personInfoFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
                     return true;
                 case R.id.navigation_review_and_payment:
                     invalidateOptionsMenu();
@@ -137,13 +157,159 @@ public class ReserveActivity extends AsaActivity
 
     }
 
+    /*          Step1   End    */
+
+    /*          Step2  CalcPrice Start  */
+
     @Override
     public void onCalcPrice(List<ReserveRoomViewModel> models) {
 
     }
 
-    /*          Step1   End    */
+    private void stepCalcPrice(){
+        List<ReserveRoomViewModel> reserveRoomViewModels =
+                reserveRoomFragment.getModel();
 
+        int calcRooms = 0;
+        int calcChilds = 0;
+        int calcAdults = 0;
+        int calcExtraBeds = 0;
+        String calcStartDate = from_date;
+        String calcEndDate = Asa.getToDate(from_date, night_numbers);
+        int calcDiscount = 0;
+        int calcTotalPrice = 0;
+
+
+        for (int i = 0; i < reserveRoomViewModels.size(); i++) {
+            ReserveRoomViewModel model = reserveRoomViewModels.get(i);
+            if (model.selectedRoomsCount <= 0)
+                continue;
+
+            Message roomkind = null;
+            for (Message roomkindItem : mRoomkindsResponse.message) {
+                if (roomkindItem.id.equals(model.room_kind_id)) {
+                    roomkind = roomkindItem;
+                    break;
+                }
+            }
+
+            int totalPerson = model.selectedAdultsCount + model.selectedChildsCount;
+            int totalBedCapacity =
+                    model.selectedRoomsCount * Integer.parseInt(roomkind.room_kind_bed);
+            int totalExtraCapacity =
+                    model.selectedRoomsCount * Integer.parseInt(roomkind.extra_bed);
+
+            //   arrange: fill rooms capacity then add extra beds
+
+            int remainPersonForExtraBeds = totalPerson - totalBedCapacity;
+
+            if (remainPersonForExtraBeds < 0)
+                remainPersonForExtraBeds = 0;
+
+            calcExtraBeds += remainPersonForExtraBeds;
+
+            int remainChildForExtraBeds = 0;
+            int remainAdultForExtraBeds = 0;
+
+            if (remainPersonForExtraBeds > 0) { // fill extra child
+
+                if (model.selectedChildsCount > 0) {
+
+                    while (remainPersonForExtraBeds > 0) {
+
+                        remainChildForExtraBeds++;
+                        remainPersonForExtraBeds--;
+
+                        if (remainChildForExtraBeds == model.selectedChildsCount)
+                            break;
+                    }
+
+                }
+            }
+
+            remainAdultForExtraBeds = remainPersonForExtraBeds;
+
+            // calc price
+
+            int totalPrice = 0;
+
+            for (int j = 0; j < Integer.parseInt(night_numbers); j++) {
+
+                int roomPrice = model.selectedRoomsCount *
+                        Integer.parseInt(model.iranian_daily_board_rate.get(j));
+
+                int extraChildPrice = remainChildForExtraBeds *
+                        Integer.parseInt(model.iranian_child_rate.get(j));
+
+                int extraAdultPrice = remainAdultForExtraBeds *
+                        Integer.parseInt(model.iranian_extra_bed_rate.get(j));
+
+                totalPrice += roomPrice + extraChildPrice + extraAdultPrice;
+
+            }
+
+            calcRooms += model.selectedRoomsCount;
+            calcAdults += model.selectedAdultsCount;
+            calcChilds += model.selectedChildsCount;
+            calcTotalPrice += totalPrice;
+            calcDiscount += totalPrice * 20 / 100;
+
+        }
+
+        Log.d(TAG, "onOptionsItemSelected: Rooms: " + calcRooms);
+        Log.d(TAG, "onOptionsItemSelected: Adults: " + calcAdults);
+        Log.d(TAG, "onOptionsItemSelected: Childs: " + calcChilds);
+        Log.d(TAG, "onOptionsItemSelected: ExtraBeds: " + calcExtraBeds);
+        Log.d(TAG, "onOptionsItemSelected: Start Date: " + calcStartDate);
+        Log.d(TAG, "onOptionsItemSelected: End Date: " + calcEndDate);
+        Log.d(TAG, "onOptionsItemSelected: Discount: " + calcDiscount);
+        Log.d(TAG, "onOptionsItemSelected: Total Price: " + calcTotalPrice);
+        Log.d(TAG, "onOptionsItemSelected: Must Pay: " + (calcTotalPrice - calcDiscount));
+
+        stepShowCalcPrice(calcRooms, calcChilds, calcAdults, calcExtraBeds, calcStartDate, calcEndDate, calcDiscount, calcTotalPrice);
+    }
+
+    private void stepShowCalcPrice(int calcRooms, int calcChilds, int calcAdults, int calcExtraBeds, String calcStartDate, String calcEndDate, int calcDiscount, int calcTotalPrice) {
+        calcPriceFragment = CalcPriceFragment.newInstance(Integer.toString(calcRooms),
+                Integer.toString(calcChilds),
+                Integer.toString(calcAdults),
+                Integer.toString(calcExtraBeds),
+                calcStartDate,
+                calcEndDate,
+                night_numbers,
+                Integer.toString(calcDiscount),
+                Integer.toString(calcTotalPrice),
+                Integer.toString(calcTotalPrice - calcDiscount));
+
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentCalcPriceContainer, calcPriceFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        FrameLayout calcContainer = findViewById(R.id.fragmentCalcPriceContainer);
+        ExpandOrCollapseView.expand(calcContainer);
+
+        FrameLayout container = findViewById(R.id.fragmentContainer);
+        container.setVisibility(View.GONE);
+    }
+
+    /**
+     * hide calcPriceFragment
+     * @param uri
+     */
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+        FrameLayout calcContainer = findViewById(R.id.fragmentCalcPriceContainer);
+        ExpandOrCollapseView.collapse(calcContainer);
+
+        FrameLayout container = findViewById(R.id.fragmentContainer);
+        container.setVisibility(View.VISIBLE);
+
+    }
+
+    /*          Step2  CalcPrice End  */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,8 +352,10 @@ public class ReserveActivity extends AsaActivity
             invalidateOptionsMenu();
             if (navigation.getSelectedItemId() == R.id.navigation_reserver_room) {
                 menu.findItem(R.id.menu_calc_price).setVisible(true);
-            }else{
+                menu.findItem(R.id.menu_save_personal_info).setVisible(false);
+            }else if(navigation.getSelectedItemId() == R.id.navigation_personal_info){
                 menu.findItem(R.id.menu_calc_price).setVisible(false);
+                menu.findItem(R.id.menu_save_personal_info).setVisible(true);
             }
         }
         return super.onPrepareOptionsMenu(menu);
@@ -197,141 +365,29 @@ public class ReserveActivity extends AsaActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_calc_price:
-                List<ReserveRoomViewModel> reserveRoomViewModels =
-                        reserveRoomFragment.getModel();
-
-                int calcRooms = 0;
-                int calcChilds = 0;
-                int calcAdults = 0;
-                int calcExtraBeds = 0;
-                String calcStartDate = from_date;
-                String calcEndDate = Asa.getToDate(from_date, night_numbers);
-                int calcDiscount = 0;
-                int calcTotalPrice = 0;
-
-
-                for (int i = 0; i < reserveRoomViewModels.size(); i++) {
-                    ReserveRoomViewModel model = reserveRoomViewModels.get(i);
-                    if (model.selectedRoomsCount <= 0)
-                        continue;
-
-                    Message roomkind = null;
-                    for (Message roomkindItem : mRoomkindsResponse.message) {
-                        if (roomkindItem.id.equals(model.room_kind_id)) {
-                            roomkind = roomkindItem;
-                            break;
-                        }
-                    }
-
-                    int totalPerson = model.selectedAdultsCount + model.selectedChildsCount;
-                    int totalBedCapacity =
-                            model.selectedRoomsCount * Integer.parseInt(roomkind.room_kind_bed);
-                    int totalExtraCapacity =
-                            model.selectedRoomsCount * Integer.parseInt(roomkind.extra_bed);
-
-                    //   arrange: fill rooms capacity then add extra beds
-
-                    int remainPersonForExtraBeds = totalPerson - totalBedCapacity;
-
-                    if (remainPersonForExtraBeds < 0)
-                        remainPersonForExtraBeds = 0;
-
-                    calcExtraBeds += remainPersonForExtraBeds;
-
-                    int remainChildForExtraBeds = 0;
-                    int remainAdultForExtraBeds = 0;
-
-                    if (remainPersonForExtraBeds > 0) { // fill extra child
-
-                        if (model.selectedChildsCount > 0) {
-
-                            while (remainPersonForExtraBeds > 0) {
-
-                                remainChildForExtraBeds++;
-                                remainPersonForExtraBeds--;
-
-                                if (remainChildForExtraBeds == model.selectedChildsCount)
-                                    break;
-                            }
-
-                        }
-                    }
-
-                    remainAdultForExtraBeds = remainPersonForExtraBeds;
-
-                    // calc price
-
-                    int totalPrice = 0;
-
-                    for (int j = 0; j < Integer.parseInt(night_numbers); j++) {
-
-                        int roomPrice = model.selectedRoomsCount *
-                                Integer.parseInt(model.iranian_daily_board_rate.get(j));
-
-                        int extraChildPrice = remainChildForExtraBeds *
-                                Integer.parseInt(model.iranian_child_rate.get(j));
-
-                        int extraAdultPrice = remainAdultForExtraBeds *
-                                Integer.parseInt(model.iranian_extra_bed_rate.get(j));
-
-                        totalPrice += roomPrice + extraChildPrice + extraAdultPrice;
-
-                    }
-
-                    calcRooms += model.selectedRoomsCount;
-                    calcAdults += model.selectedAdultsCount;
-                    calcChilds += model.selectedChildsCount;
-                    calcTotalPrice += totalPrice;
-                    calcDiscount += totalPrice * 20 / 100;
-
-                }
-
-                Log.d(TAG, "onOptionsItemSelected: Rooms: " + calcRooms);
-                Log.d(TAG, "onOptionsItemSelected: Adults: " + calcAdults);
-                Log.d(TAG, "onOptionsItemSelected: Childs: " + calcChilds);
-                Log.d(TAG, "onOptionsItemSelected: ExtraBeds: " + calcExtraBeds);
-                Log.d(TAG, "onOptionsItemSelected: Start Date: " + calcStartDate);
-                Log.d(TAG, "onOptionsItemSelected: End Date: " + calcEndDate);
-                Log.d(TAG, "onOptionsItemSelected: Discount: " + calcDiscount);
-                Log.d(TAG, "onOptionsItemSelected: Total Price: " + calcTotalPrice);
-                Log.d(TAG, "onOptionsItemSelected: Must Pay: " + (calcTotalPrice - calcDiscount));
-
-                calcPriceFragment = CalcPriceFragment.newInstance(Integer.toString(calcRooms),
-                        Integer.toString(calcChilds),
-                        Integer.toString(calcAdults),
-                        Integer.toString(calcExtraBeds),
-                        calcStartDate,
-                        calcEndDate,
-                        night_numbers,
-                        Integer.toString(calcDiscount),
-                        Integer.toString(calcTotalPrice),
-                        Integer.toString(calcTotalPrice - calcDiscount));
-
-
-                fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentCalcPriceContainer, calcPriceFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
-                FrameLayout calcContainer = findViewById(R.id.fragmentCalcPriceContainer);
-                ExpandOrCollapseView.expand(calcContainer);
-
-                FrameLayout container = findViewById(R.id.fragmentContainer);
-                container.setVisibility(View.GONE);
-
+                stepCalcPrice();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onBackPressed() {
+        super.onBackPressed();
+        int count = getSupportFragmentManager().getBackStackEntryCount();
 
-        FrameLayout calcContainer = findViewById(R.id.fragmentCalcPriceContainer);
-        ExpandOrCollapseView.collapse(calcContainer);
+        if (count == 1) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
 
-        FrameLayout container = findViewById(R.id.fragmentContainer);
-        container.setVisibility(View.VISIBLE);
+    @Override
+    public void onPersonFragmentInteraction() {
+
+
 
     }
 }

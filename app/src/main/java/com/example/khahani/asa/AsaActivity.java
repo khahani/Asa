@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.khahani.asa.activity.PersonInfoFragment;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.CityFragment;
 import com.example.khahani.asa.fragment.HotelFragment;
@@ -42,6 +43,7 @@ public class AsaActivity extends AppCompatActivity {
 
     protected ReserveRoomFragment reserveRoomFragment;
     protected CalcPriceFragment calcPriceFragment;
+    protected PersonInfoFragment personInfoFragment;
 
     protected void init() {
 
