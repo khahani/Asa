@@ -18,6 +18,10 @@ import com.example.khahani.asa.model.cities.Message;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
+import com.mohamadamin.persianmaterialdatetimepicker.date.MonthAdapter;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
+
+import java.text.SimpleDateFormat;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -115,7 +119,11 @@ public class MainActivity extends AsaActivity
         fragmentTransaction.commit();
 
         onDateSetListener = (datePickerDialog, year, monthOfYear, dayOfMonth) -> {
-            String selectedDate = "" + year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+
+            PersianCalendar calendar  = new PersianCalendar();
+            calendar.setPersianDate(year, monthOfYear + 1, dayOfMonth);
+            String selectedDate = calendar.getPersianShortDate();
+
             Log.d(TAG, selectedDate);
             step1Fragment.updateEditTextFromDate(selectedDate);
         };

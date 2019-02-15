@@ -8,7 +8,7 @@ import com.example.khahani.asa.model.capacities.MessageDeserializer;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
-import com.example.khahani.asa.model.reserve5min.Reserve1Respose;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinRespose;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 import com.example.khahani.asa.utils.Asa;
@@ -17,13 +17,12 @@ import com.google.gson.GsonBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -289,27 +288,38 @@ public class AsaService {
     }
 
     public static void postReserve5Min(String id_hotel,
-                                     String from_date, String to_date,
-                                     List<RoomDetail> roomDetails,
-                                     Callback<Reserve1Respose> callbackReserve5Min) {
+                                       String from_date, String to_date,
+                                       List<RoomDetail> roomDetails,
+                                       Callback<Reserve5MinRespose> callbackReserve5Min) {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
                 .addInterceptor(chain -> {
                     Request request = chain.request();
+
                     String string = request.url().toString();
                     string = string.replace("%25", "%");
-//                    string = string.replace("%2B", "+");
 
                     string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
 
                     Log.d("TAG", "postReserve5Min: " + string);
+
+//                    request.newBuilder()
+//                            .url(string)
+//                            .build();
                     Request newRequest = new Request.Builder()
                             .url(string)
+                            .post(request.body())
                             .build();
+
                     return chain.proceed(newRequest);
                 })
+                .addInterceptor(logging)
                 .build();
 
         Gson gson = new GsonBuilder()
@@ -327,15 +337,18 @@ public class AsaService {
         ApiService service = retrofit.create(ApiService.class);
 
 
-
         String[] params = new String[0];
         try {
+
+            String roomDetailParams = URLEncoder.encode(Asa.roomDetailToUrl(roomDetails), "utf-8");
+            roomDetailParams = roomDetailParams.replace("%3D", "=");
+            roomDetailParams = roomDetailParams.replace("%26", "&");
 
             params = new String[]{
                     "id_hotel", id_hotel,
                     "from_date", URLEncoder.encode(Asa.getMiladiDate(from_date), "utf-8"),
                     "to_date", URLEncoder.encode(Asa.getMiladiDate(to_date), "utf-8"),
-                    Asa.roomDetailToUrl(roomDetails)
+                    roomDetailParams
             };
 
         } catch (UnsupportedEncodingException e) {
@@ -349,7 +362,7 @@ public class AsaService {
                 id_hotel,
                 Asa.getMiladiDate(from_date),
                 Asa.getMiladiDate(to_date),
-                Asa.roomDetailToUrl(roomDetails)
-                ).enqueue(callbackReserve5Min);
+                Asa.roomDetailToMap(roomDetails)
+        ).enqueue(callbackReserve5Min);
     }
 }

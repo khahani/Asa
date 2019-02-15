@@ -13,18 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.example.khahani.asa.AsaActivity;
 import com.example.khahani.asa.R;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReserveRoomViewModel;
-import com.example.khahani.asa.model.capacities.CapacitiesResponse;
-import com.example.khahani.asa.model.reserve5min.Reserve1Respose;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinRespose;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.Message;
-import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
 import com.example.khahani.asa.utils.ExpandOrCollapseView;
@@ -109,14 +106,6 @@ public class ReserveActivity extends AsaActivity
 
                     stepReserve5Min();
 
-                    if (personInfoFragment == null) {
-                        personInfoFragment = PersonInfoFragment.newInstance();
-                    }
-
-                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentContainer, personInfoFragment);
-                    fragmentTransaction.commit();
-
                     return true;
                 case R.id.navigation_review_and_payment:
                     invalidateOptionsMenu();
@@ -125,15 +114,24 @@ public class ReserveActivity extends AsaActivity
             return false;
         }
     };
-    private Callback<Reserve1Respose> callbackReserve5Min = new Callback<Reserve1Respose>() {
+    private Callback<Reserve5MinRespose> callbackReserve5Min = new Callback<Reserve5MinRespose>() {
         @Override
-        public void onResponse(Call<Reserve1Respose> call, Response<Reserve1Respose> response) {
+        public void onResponse(Call<Reserve5MinRespose> call, Response<Reserve5MinRespose> response) {
+            Log.d(TAG, "onResponse: " + response.body());
+
+            if (personInfoFragment == null) {
+                personInfoFragment = PersonInfoFragment.newInstance();
+            }
+
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragmentContainer, personInfoFragment);
+            fragmentTransaction.commit();
 
         }
 
         @Override
-        public void onFailure(Call<Reserve1Respose> call, Throwable t) {
-
+        public void onFailure(Call<Reserve5MinRespose> call, Throwable t) {
+            Log.d(TAG, "onFailure: reserve 5 min", t);
         }
     };
 
@@ -141,12 +139,24 @@ public class ReserveActivity extends AsaActivity
 
         List<RoomDetail> roomDetails = new ArrayList<>();
 
-        RoomDetail roomDetail = new RoomDetail();
-        roomDetail.number =
-                Integer.toString(selectedRoomDetails.get(0).selectedRoomsCount);
-        roomDetail.adult =
-                Integer.toString(selectedRoomDetails.get(0).selectedAdultsCount);
 
+        for (int i = 0; i < selectedRoomDetails.size(); i++) {
+
+            if (selectedRoomDetails.get(i).selectedRoomsCount <= 0)
+                continue;
+
+            RoomDetail roomDetail = new RoomDetail();
+            roomDetail.id_roomkind = selectedRoomDetails.get(i).room_kind_id;
+            roomDetail.number =
+                    Integer.toString(selectedRoomDetails.get(i).selectedRoomsCount);
+            roomDetail.adult =
+                    Integer.toString(selectedRoomDetails.get(i).selectedAdultsCount);
+
+            for (int j = 0; j < selectedRoomDetails.get(i).selectedChildsCount; j++) {
+                roomDetail.child.add("1");
+            }
+            roomDetails.add(roomDetail);
+        }
 
         AsaService.postReserve5Min(id_hotel, mCalcStartDate, mCalcEndDate, roomDetails, callbackReserve5Min);
 

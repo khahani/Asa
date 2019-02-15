@@ -5,12 +5,13 @@ import com.example.khahani.asa.model.capacities.CapacitiesResponse;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
-import com.example.khahani.asa.model.reserve5min.Reserve1Respose;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinRespose;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -77,8 +78,9 @@ public interface ApiService {
             @Query("from_date") String from_date,
             @Query("to_date") String to_date);
 
+
     @POST("reserve")
-    Call<Reserve1Respose> postReserve5Min(
+    Call<Reserve5MinRespose> postReserve5Min(
             @Query("access_key_id") String access_key_id,
             @Query("signature") String signature,
             @Query("version") String version,
@@ -86,7 +88,7 @@ public interface ApiService {
             @Query("id_hotel") String id_hotel,
             @Query("from_date") String from_date,
             @Query("to_date") String to_date,
-            @Query("") String room_detail);
+            @QueryMap() Map<String, String> room_detail);
 
 
 }

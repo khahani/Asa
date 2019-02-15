@@ -1,14 +1,21 @@
 package com.example.khahani.asa.utils;
 
+
 import android.util.Log;
 
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.util.Calendar;
+import com.ibm.icu.util.ULocale;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -52,11 +59,31 @@ public class Asa {
     }
 
     public static String getMiladiDate(String persianDate) {
+
+        String[] splited = persianDate.split("/");
+        splited[1] = Integer.toString(Integer.parseInt(splited[1]) - 1);
+        persianDate = splited[0] + "/" + splited[1] + "/" + splited[2];
+
         PersianCalendar calendar = new PersianCalendar();
         calendar.parse(persianDate);
         Date date = calendar.getTime();
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         return fmt.format(date);
+
+      /*  String[] splited = persianDate.split("/");
+
+
+        ULocale locale = new ULocale("fa_IR@calendar=persian");
+
+        Calendar calendar = Calendar.getInstance(locale);
+        Calendar calendar2 = Calendar.getInstance();
+
+        calendar.set(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]) - 1,Integer.parseInt(splited[2]));
+
+        DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, locale);
+
+        return df.format(calendar);*/
+
     }
 
     public static String getToDate(String from_date, String numberNights) {
@@ -109,5 +136,41 @@ public class Asa {
         }
 
         return builder.toString();
+    }
+
+    public static Map<String, String> roomDetailToMap(List<RoomDetail> roomDetails) {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
+        if (roomDetails == null || roomDetails.size() <= 0) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        //room_detail[0][id_roomkind]=1&room_detail[0][number]=1
+        // &room_detail[0][adult]=1&room_detail[0][child][0]=1&room_detail[0][child][1]=1
+
+        for (int i = 0; i < roomDetails.size(); i++) {
+
+            map.put("room_detail[" + i + "][id_roomkind]", roomDetails.get(i).id_roomkind);
+
+            map.put("room_detail[" + i + "][number]", roomDetails.get(i).number);
+
+            map.put("room_detail[" + i + "][adult]", roomDetails.get(i).adult);
+
+            if (roomDetails.get(i).child.size() > 0) {
+
+                for (int j = 0; j < roomDetails.get(i).child.size(); j++) {
+
+                    map.put("room_detail[" + i + "][child][" + j + "]", roomDetails.get(i).child.get(j));
+
+                }
+
+            }
+
+        }
+
+
+        return map;
     }
 }

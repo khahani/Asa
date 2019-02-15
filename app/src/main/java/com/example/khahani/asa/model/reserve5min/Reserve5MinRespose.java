@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Reserve1Respose {
+public class Reserve5MinRespose {
     @SerializedName("no")
     public String no;
     @SerializedName("type")
@@ -16,7 +16,7 @@ public class Reserve1Respose {
     @SerializedName("time_stamp")
     public String time_stamp;
     @SerializedName("message")
-    public List<Message> message;
+    public Message message;
 
     @Override
     public String toString() {
@@ -35,10 +35,10 @@ public class Reserve1Respose {
         return gson.toJson(this);
     }
 
-    public static Reserve1Respose fromJson(String json){
+    public static Reserve5MinRespose fromJson(String json){
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(MessageDeserializer.class, new MessageDeserializer("message"));
         Gson gson = builder.create();
-        return gson.fromJson(json, Reserve1Respose.class);
+        return gson.fromJson(json, Reserve5MinRespose.class);
     }
 }
