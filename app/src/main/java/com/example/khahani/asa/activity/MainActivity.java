@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.khahani.asa.AsaActivity;
 import com.example.khahani.asa.R;
@@ -18,6 +19,8 @@ import com.example.khahani.asa.model.cities.Message;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
+import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerController;
+import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
 import com.mohamadamin.persianmaterialdatetimepicker.date.MonthAdapter;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
@@ -87,6 +90,8 @@ public class MainActivity extends AsaActivity
             Log.e(TAG, "onFailure: error", t);
 
             loading.setVisibility(View.INVISIBLE);
+
+            //networkFailed(MainActivity.this, MainActivity.class);
         }
     };
 
@@ -120,13 +125,32 @@ public class MainActivity extends AsaActivity
 
         onDateSetListener = (datePickerDialog, year, monthOfYear, dayOfMonth) -> {
 
-            PersianCalendar calendar  = new PersianCalendar();
-            calendar.setPersianDate(year, monthOfYear + 1, dayOfMonth);
-            String selectedDate = calendar.getPersianShortDate();
+            String selectedDate = String.format("%s/%s/%s",
+                    year, monthOfYear + 1, dayOfMonth);
 
             Log.d(TAG, selectedDate);
             step1Fragment.updateEditTextFromDate(selectedDate);
         };
+
+        datePickerDialog.registerOnDateChangedListener(new DatePickerDialog.OnDateChangedListener() {
+            @Override
+            public void onDateChanged() {
+                int year = datePickerDialog.getSelectedDay().getYear();
+                int month = datePickerDialog.getSelectedDay().getMonth();
+                int day = datePickerDialog.getSelectedDay().getDay();
+
+                String selectedDate = String.format("%s/%s/%s",
+                        year, month + 1, day);
+
+                Log.d(TAG, selectedDate);
+                step1Fragment.updateEditTextFromDate(selectedDate);
+
+                datePickerDialog.dismiss();
+
+            }
+        });
+
+
         datePickerDialog.setOnDateSetListener(onDateSetListener);
 
     }
@@ -161,7 +185,6 @@ public class MainActivity extends AsaActivity
     }
 
 
-
     @Override
     public void onListFragmentInteraction(Message item) {
         id_city = item.code;
@@ -181,6 +204,11 @@ public class MainActivity extends AsaActivity
     public void onLoadCompleted() {
         loading.setVisibility(View.INVISIBLE);
 
+    }
+
+    @Override
+    public void onNetworkFailed() {
+        networkFailed(MainActivity.this, MainActivity.class);
     }
 
 

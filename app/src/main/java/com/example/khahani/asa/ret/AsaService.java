@@ -8,7 +8,9 @@ import com.example.khahani.asa.model.capacities.MessageDeserializer;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
-import com.example.khahani.asa.model.reserve5min.Reserve5MinRespose;
+import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
+import com.example.khahani.asa.model.reserve15min.ReserveDetail;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 import com.example.khahani.asa.utils.Asa;
@@ -18,11 +20,13 @@ import com.google.gson.GsonBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -290,7 +294,7 @@ public class AsaService {
     public static void postReserve5Min(String id_hotel,
                                        String from_date, String to_date,
                                        List<RoomDetail> roomDetails,
-                                       Callback<Reserve5MinRespose> callbackReserve5Min) {
+                                       Callback<Reserve5MinResponse> callbackReserve5Min) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -309,9 +313,6 @@ public class AsaService {
 
                     Log.d("TAG", "postReserve5Min: " + string);
 
-//                    request.newBuilder()
-//                            .url(string)
-//                            .build();
                     Request newRequest = new Request.Builder()
                             .url(string)
                             .post(request.body())
@@ -364,5 +365,77 @@ public class AsaService {
                 Asa.getMiladiDate(to_date),
                 Asa.roomDetailToMap(roomDetails)
         ).enqueue(callbackReserve5Min);
+    }
+
+    public static void putReserve15Min(String id_reserve_asa,
+                                       String id_reserve_hotel,
+                                       List<ReserveDetail> reserveDetails,
+                                       Callback<Reserve15MinResponse> callbackReserve15Min) {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+
+                    String string = request.url().toString();
+                    string = string.replace("%25", "%");
+
+                    string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
+
+                    Log.d("TAG", "putReserve15Min: " + string);
+
+                    Request newRequest = new Request.Builder()
+                            .url(string)
+                            .put(request.body())
+                            .build();
+
+                    return chain.proceed(newRequest);
+                })
+                .addInterceptor(logging)
+                .build();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(com.example.khahani.asa.model.reserve15min.Message.class,
+                        new com.example.khahani.asa.model.reserve15min.MessageDeserializer("message"))
+                .disableHtmlEscaping()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(ApiService.ASA_URL)
+                .client(client)
+                .build();
+
+        ApiService service = retrofit.create(ApiService.class);
+
+
+        String[] params = new String[0];
+        try {
+
+            String reserveDetailParam = URLEncoder.encode(Asa.reserveDetailToUrl(reserveDetails), "utf-8");
+            reserveDetailParam = reserveDetailParam.replace("%3D", "=");
+            reserveDetailParam = reserveDetailParam.replace("%26", "&");
+
+            params = new String[]{
+                    "id_reserve_hotel", id_reserve_hotel,
+                    reserveDetailParam
+            };
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        service.putReserve15Min(id_reserve_asa,
+                "demo",
+                Asa.getSigniture("demo", params),
+                "6",
+                "0000-00-00+00%3A00%3A00",
+                id_reserve_hotel,
+                Asa.reserveDetailToMap(reserveDetails)
+        ).enqueue(callbackReserve15Min);
     }
 }

@@ -12,18 +12,18 @@ public class ReserveRoomViewModel {
     public String room_kind_name;
     public String room_availibility;
     public List<String> iranian_date;
-    public List<String> iranian_daily_board_rate;
-    public List<String> iranian_extra_bed_rate;
-    public List<String> iranian_child_rate;
+    public List<String> iranian_daily_board_rate_TSI;
+    public List<String> iranian_extra_bed_rate_TSI;
+    public List<String> iranian_child_rate_TSI;
     public int selectedRoomsCount;
     public int selectedAdultsCount;
     public int selectedChildsCount;
 
-    public ReserveRoomViewModel(){
+    public ReserveRoomViewModel() {
         iranian_date = new ArrayList<>();
-        iranian_daily_board_rate = new ArrayList<>();
-        iranian_extra_bed_rate = new ArrayList<>();
-        iranian_child_rate = new ArrayList<>();
+        iranian_daily_board_rate_TSI = new ArrayList<>();
+        iranian_extra_bed_rate_TSI = new ArrayList<>();
+        iranian_child_rate_TSI = new ArrayList<>();
     }
 
     public static List<ReserveRoomViewModel> fromCapacities(List<Message> capacities) {
@@ -46,32 +46,32 @@ public class ReserveRoomViewModel {
 
                     model = data.get(j);
                     model.iranian_date.add(current.iranian_date);
-                    model.iranian_daily_board_rate.add(current.iranian_daily_board_rate);
-                    model.iranian_child_rate.add(current.iranian_child_rate);
-                    model.iranian_extra_bed_rate.add(current.iranian_extra_bed_rate);
+                    model.iranian_daily_board_rate_TSI.add(current.iranian_daily_board_rate_TSI);
+                    model.iranian_child_rate_TSI.add(current.iranian_child_rate_TSI);
+                    model.iranian_extra_bed_rate_TSI.add(current.iranian_extra_bed_rate_TSI);
 
                     exists = true;
                     break;
                 }
             }
 
-            if(!exists){
-                    model = new ReserveRoomViewModel();
-                    model.hotel_id = current.hotel_id;
-                    model.room_availibility =
-                            Integer.parseInt(current.room_availibility) > 3 ?
-                                    "3" : current.room_availibility;
+            if (!exists) {
+                model = new ReserveRoomViewModel();
+                model.hotel_id = current.hotel_id;
+                model.room_availibility =
+                        Integer.parseInt(current.room_availibility) > 3 ?
+                                "3" : current.room_availibility;
 
-                    model.room_kind_id = current.room_kind_id;
-                    model.room_kind_name = current.room_kind_name;
-                    model.iranian_date.add(current.iranian_date);
-                    model.iranian_daily_board_rate.add(current.iranian_daily_board_rate);
-                    model.iranian_child_rate.add(current.iranian_child_rate);
-                    model.iranian_extra_bed_rate.add(current.iranian_extra_bed_rate);
+                model.room_kind_id = current.room_kind_id;
+                model.room_kind_name = current.room_kind_name;
+                model.iranian_date.add(current.iranian_date);
+                model.iranian_daily_board_rate_TSI.add(current.iranian_daily_board_rate_TSI);
+                model.iranian_child_rate_TSI.add(current.iranian_child_rate_TSI);
+                model.iranian_extra_bed_rate_TSI.add(current.iranian_extra_bed_rate_TSI);
 
-                    data.add(model);
-                }
+                data.add(model);
             }
+        }
         return data;
     }
 }

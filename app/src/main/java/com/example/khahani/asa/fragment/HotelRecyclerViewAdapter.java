@@ -13,6 +13,7 @@ import com.example.khahani.asa.R;
 import com.example.khahani.asa.fragment.HotelFragment.OnListFragmentInteractionListener;
 import com.example.khahani.asa.model.hotels_date.Message;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 
@@ -39,10 +40,25 @@ public class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecycler
         holder.mIdView.setText(mValues.get(position).id);
         holder.mContentView.setText(mValues.get(position).persian_name);
 
+        DecimalFormat frm = new DecimalFormat("#,###,###");
+        if (mValues.get(position).min_fullrate != null &&
+                !mValues.get(position).min_fullrate.equals("")) {
+
+            holder.mMinRate.setText(
+                    frm.format(Integer.parseInt(mValues.get(position).min_fullrate)));
+
+        } else if (mValues.get(position).min_rate != null &&
+                !mValues.get(position).min_rate.equals("")) {
+
+            holder.mMinRate.setText(
+                    frm.format(Integer.parseInt(mValues.get(position).min_rate)));
+
+        }
+
         if (Integer.parseInt(mValues.get(position).star) > 0) {
             holder.mRatingBar.setNumStars(Integer.parseInt(mValues.get(position).star));
             holder.mRatingBar.setRating(Float.parseFloat(mValues.get(position).star));
-        }else{
+        } else {
             holder.mRatingBar.setVisibility(View.INVISIBLE);
         }
 
@@ -63,6 +79,7 @@ public class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecycler
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView mMinRate;
         public final AppCompatRatingBar mRatingBar;
         public Message mItem;
 
@@ -71,6 +88,7 @@ public class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecycler
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.item_number);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mMinRate = (TextView) view.findViewById(R.id.textViewMinRate);
             mRatingBar = (AppCompatRatingBar) view.findViewById(R.id.ratingBar_star);
         }
 

@@ -23,9 +23,7 @@ import java.util.List;
  */
 public class HotelFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
@@ -38,8 +36,6 @@ public class HotelFragment extends Fragment {
     public HotelFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static HotelFragment newInstance(int columnCount) {
         HotelFragment fragment = new HotelFragment();
         Bundle args = new Bundle();
@@ -109,7 +105,6 @@ public class HotelFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Message item);
     }
 }

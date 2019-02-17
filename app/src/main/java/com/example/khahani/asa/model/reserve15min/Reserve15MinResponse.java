@@ -1,12 +1,10 @@
-package com.example.khahani.asa.model.reserve5min;
+package com.example.khahani.asa.model.reserve15min;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class Reserve5MinRespose {
+public class Reserve15MinResponse {
     @SerializedName("no")
     public String no;
     @SerializedName("type")
@@ -35,10 +33,10 @@ public class Reserve5MinRespose {
         return gson.toJson(this);
     }
 
-    public static Reserve5MinRespose fromJson(String json){
+    public static Reserve15MinResponse fromJson(String json){
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(MessageDeserializer.class, new MessageDeserializer("message"));
         Gson gson = builder.create();
-        return gson.fromJson(json, Reserve5MinRespose.class);
+        return gson.fromJson(json, Reserve15MinResponse.class);
     }
 }

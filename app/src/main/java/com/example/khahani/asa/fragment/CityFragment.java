@@ -31,10 +31,9 @@ import retrofit2.Response;
  */
 public class CityFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String TAG = CityFragment.class.getSimpleName();
-    // TODO: Customize parameters
+
     private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
 
@@ -47,7 +46,6 @@ public class CityFragment extends Fragment {
     public CityFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static CityFragment newInstance(int columnCount) {
         CityFragment fragment = new CityFragment();
@@ -106,10 +104,11 @@ public class CityFragment extends Fragment {
     }
 
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onListFragmentInteraction(Message item);
         void onLoadBegins();
         void onLoadCompleted();
+        void onNetworkFailed();
     }
 
     @Override
@@ -144,6 +143,7 @@ public class CityFragment extends Fragment {
 
             if (mListener != null){
                 mListener.onLoadCompleted();
+                mListener.onNetworkFailed();
             }
 
         }

@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<ReserveRoomRecyclerViewAdapter.ViewHolder> {
 
@@ -69,18 +68,18 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         holder.mTextViewTitleRoomkindName.setText(holder.mRoomkind.persian_hotel_label);
 
         DecimalFormat formatter = new DecimalFormat("#,###,###");
-        String iranian_daily_board_rate = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate.get(0)));
+        String iranian_daily_board_rate_TSI = formatter.format(
+                Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)));
         String iranian_daily_board_rate_with_off = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate.get(0)) * 80 / 100);
-        String iranian_extra_bed_rate = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_extra_bed_rate.get(0)));
-        String iranian_child_rate = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_child_rate.get(0)));
+                Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)) * 80 / 100);
+        String iranian_extra_bed_rate_TSI = formatter.format(
+                Integer.parseInt(holder.mReserveRoomViewModel.iranian_extra_bed_rate_TSI.get(0)));
+        String iranian_child_rate_TSI = formatter.format(
+                Integer.parseInt(holder.mReserveRoomViewModel.iranian_child_rate_TSI.get(0)));
 
 
         holder.mTextViewTitleFixedBoardRate.setText(mContext.getResources()
-                .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate));
+                .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate_TSI));
 
         holder.mTextViewTitleFixedBoardRate
                 .setPaintFlags(holder.mTextViewTitleFixedBoardRate.getPaintFlags() |
@@ -91,10 +90,10 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
                 .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate_with_off));
 
         holder.mTextViewTitleFixedExtraBoardRate.setText(mContext.getResources()
-                .getString(R.string.titleFixedExtraBoardRate, iranian_extra_bed_rate));
+                .getString(R.string.titleFixedExtraBoardRate, iranian_extra_bed_rate_TSI));
 
         holder.mTextViewTitleFixedChildBoardRate.setText(mContext.getResources()
-                .getString(R.string.titleFixedChildBoardRate, iranian_child_rate));
+                .getString(R.string.titleFixedChildBoardRate, iranian_child_rate_TSI));
 
 
         holder.mSpinnerRoomsCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

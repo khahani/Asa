@@ -5,15 +5,17 @@ import com.example.khahani.asa.model.capacities.CapacitiesResponse;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
-import com.example.khahani.asa.model.reserve5min.Reserve5MinRespose;
+import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
@@ -80,7 +82,7 @@ public interface ApiService {
 
 
     @POST("reserve")
-    Call<Reserve5MinRespose> postReserve5Min(
+    Call<Reserve5MinResponse> postReserve5Min(
             @Query("access_key_id") String access_key_id,
             @Query("signature") String signature,
             @Query("version") String version,
@@ -90,5 +92,15 @@ public interface ApiService {
             @Query("to_date") String to_date,
             @QueryMap() Map<String, String> room_detail);
 
+
+    @PUT("reserve/{id_reserve_asa}")
+    Call<Reserve15MinResponse> putReserve15Min(
+            @Path("id_reserve_asa") String id_reserve_asa,
+            @Query("access_key_id") String access_key_id,
+            @Query("signature") String signature,
+            @Query("version") String version,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("id_reserve_hotel") String id_reserve_hotel,
+            @QueryMap() Map<String, String> reserve_detail);
 
 }

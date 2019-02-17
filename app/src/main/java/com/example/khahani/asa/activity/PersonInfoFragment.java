@@ -69,14 +69,7 @@ public class PersonInfoFragment extends Fragment {
         return true;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onPersonFragmentInteraction();
-        }
-    }
-
-    @Override
+     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {

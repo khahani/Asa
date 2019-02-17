@@ -1,6 +1,8 @@
 package com.example.khahani.asa.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,14 +34,13 @@ import retrofit2.Response;
  */
 public class ReserveRoomFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String ARG_ID_HOTEL = "id_hotel";
     private static final String ARG_ID_CITY = "id_city";
     private static final String ARG_FROM_DATE = "from_date";
     private static final String ARG_NIGHT_NUMBERS = "night_numbers";
     private static final String TAG = ReserveRoomFragment.class.getSimpleName();
-    // TODO: Customize parameters
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
@@ -57,8 +58,7 @@ public class ReserveRoomFragment extends Fragment {
     public ReserveRoomFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+
     public static ReserveRoomFragment newInstance(
             int columnCount,String id_city,
             String id_hotel, String from_date, String night_numbers) {
@@ -110,6 +110,18 @@ public class ReserveRoomFragment extends Fragment {
                                  List<com.example.khahani.asa.model.roomkinds.Message> roomkinds){
 
         List<ReserveRoomViewModel> viewModel = ReserveRoomViewModel.fromCapacities(capacities);
+
+        if (viewModel.size() <= 0){
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setMessage("تمام اتاق ها پر می باشند")
+                    .setTitle("ظرفیت تکمیل")
+                    .setPositiveButton("باشه", (dialog1, which) -> {
+                        dialog1.dismiss();
+                        getActivity().finish();
+                    }).create();
+
+            dialog.show();
+        }
 
         mReserveRoomRecyclerViewAdapter = new ReserveRoomRecyclerViewAdapter(roomkinds, viewModel, mListener);
 

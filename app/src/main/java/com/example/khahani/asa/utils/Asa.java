@@ -3,6 +3,7 @@ package com.example.khahani.asa.utils;
 
 import android.util.Log;
 
+import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.util.Calendar;
@@ -87,6 +88,13 @@ public class Asa {
     }
 
     public static String getToDate(String from_date, String numberNights) {
+
+        String[] splitedDate = from_date.split("/");
+        splitedDate[1] = Integer.toString(
+                Integer.parseInt(splitedDate[1]) - 1
+        );
+        from_date = splitedDate[0] + "/" + splitedDate[1] + "/" + splitedDate[2];
+
         PersianCalendar calendar = new PersianCalendar();
         calendar.parse(from_date);
         calendar.addPersianDate(PersianCalendar.DAY_OF_MONTH,
@@ -94,7 +102,7 @@ public class Asa {
         int day = calendar.getPersianDay();
         int month = calendar.getPersianMonth();
         int year = calendar.getPersianYear();
-        return year + "/" + month + "/" + day;
+        return year + "/" + (month + 1) + "/" + day;
     }
 
     public static String roomDetailToUrl(List<RoomDetail> roomDetails) {
@@ -133,6 +141,10 @@ public class Asa {
 
             }
 
+            if (i != roomDetails.size() - 1){
+                builder.append("&");
+            }
+
         }
 
         return builder.toString();
@@ -167,9 +179,112 @@ public class Asa {
                 }
 
             }
+//            else{
+//                map.put("room_detail[" + i + "][child][0]", "0");
+//            }
 
         }
 
+
+        return map;
+    }
+
+    public static String reserveDetailToUrl(List<ReserveDetail> reserveDetails) {
+        if (reserveDetails == null || reserveDetails.size() <= 0) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        //reserve_detail[last_name]=تست&reserve_detail[first_name]=تست&
+        // reserve_detail[adress]=مشهد - تست&reserve_detail[source]=5897&
+        // reserve_detail[telephone]=0513-8786543&reserve_detail[melli_code]=8126736124&
+        // reserve_detail[transfer]=0&reserve_detail[travel_with]=1&
+        // reserve_detail[nation]=0&reserve_detail[message]=ندارد&
+        // reserve_detail[mobile]=09123456789&reserve_detail[flight_number]=زاگرس ۲۲&
+        // reserve_detail[flight_time]=11:15&reserve_detail[clerk]=نام تست
+
+        for (int i = 0; i < reserveDetails.size(); i++) {
+
+            builder.append("reserve_detail[last_name]=" + reserveDetails.get(i).last_name);
+            builder.append("&");
+
+            builder.append("reserve_detail[first_name]=" + reserveDetails.get(i).first_name);
+            builder.append("&");
+
+            builder.append("reserve_detail[adress]=" + reserveDetails.get(i).adress);
+            builder.append("&");
+
+            builder.append("reserve_detail[source]=" + reserveDetails.get(i).source);
+            builder.append("&");
+
+            builder.append("reserve_detail[telephone]=" + reserveDetails.get(i).telephone);
+            builder.append("&");
+
+            builder.append("reserve_detail[melli_code]=" + reserveDetails.get(i).melli_code);
+            builder.append("&");
+
+            builder.append("reserve_detail[transfer]=" + reserveDetails.get(i).transfer);
+            builder.append("&");
+
+            builder.append("reserve_detail[travel_with]=" + reserveDetails.get(i).travel_with);
+            builder.append("&");
+
+            builder.append("reserve_detail[nation]=" + reserveDetails.get(i).nation);
+            builder.append("&");
+
+            builder.append("reserve_detail[message]=" + reserveDetails.get(i).message);
+            builder.append("&");
+
+            builder.append("reserve_detail[mobile]=" + reserveDetails.get(i).mobile);
+            builder.append("&");
+
+            builder.append("reserve_detail[flight_number]=" + reserveDetails.get(i).flight_number);
+            builder.append("&");
+
+            builder.append("reserve_detail[flight_time]=" + reserveDetails.get(i).flight_time);
+            builder.append("&");
+
+            builder.append("reserve_detail[clerk]=" + reserveDetails.get(i).clerk);
+
+        }
+
+        return builder.toString();
+    }
+
+    public static Map<String, String> reserveDetailToMap(List<ReserveDetail> reserveDetails) {
+
+        if (reserveDetails == null || reserveDetails.size() <= 0) {
+            return null;
+        }
+
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //reserve_detail[last_name]=تست&reserve_detail[first_name]=تست&
+        // reserve_detail[adress]=مشهد - تست&reserve_detail[source]=5897&
+        // reserve_detail[telephone]=0513-8786543&reserve_detail[melli_code]=8126736124&
+        // reserve_detail[transfer]=0&reserve_detail[travel_with]=1&
+        // reserve_detail[nation]=0&reserve_detail[message]=ندارد&
+        // reserve_detail[mobile]=09123456789&reserve_detail[flight_number]=زاگرس ۲۲&
+        // reserve_detail[flight_time]=11:15&reserve_detail[clerk]=نام تست
+
+        for (int i = 0; i < reserveDetails.size(); i++) {
+
+            map.put("reserve_detail[last_name]", reserveDetails.get(i).last_name);
+            map.put("reserve_detail[first_name]", reserveDetails.get(i).first_name);
+            map.put("reserve_detail[adress]", reserveDetails.get(i).adress);
+            map.put("reserve_detail[source]", reserveDetails.get(i).source);
+            map.put("reserve_detail[telephone]", reserveDetails.get(i).telephone);
+            map.put("reserve_detail[melli_code]", reserveDetails.get(i).melli_code);
+            map.put("reserve_detail[transfer]", reserveDetails.get(i).transfer);
+            map.put("reserve_detail[travel_with]", reserveDetails.get(i).travel_with);
+            map.put("reserve_detail[nation]", reserveDetails.get(i).nation);
+            map.put("reserve_detail[message]", reserveDetails.get(i).message);
+            map.put("reserve_detail[mobile]", reserveDetails.get(i).mobile);
+            map.put("reserve_detail[flight_number]", reserveDetails.get(i).flight_number);
+            map.put("reserve_detail[flight_time]", reserveDetails.get(i).flight_time);
+            map.put("reserve_detail[clerk]", reserveDetails.get(i).clerk);
+
+        }
 
         return map;
     }

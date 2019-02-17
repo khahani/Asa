@@ -19,7 +19,10 @@ import com.example.khahani.asa.R;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReserveRoomViewModel;
-import com.example.khahani.asa.model.reserve5min.Reserve5MinRespose;
+import com.example.khahani.asa.fragment.ReviewFragment;
+import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
+import com.example.khahani.asa.model.reserve15min.ReserveDetail;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.Message;
 import com.example.khahani.asa.ret.AsaService;
@@ -36,7 +39,8 @@ import retrofit2.Response;
 public class ReserveActivity extends AsaActivity
         implements ReserveRoomFragment.OnListFragmentInteractionListener,
         CalcPriceFragment.OnFragmentInteractionListener,
-        PersonInfoFragment.OnFragmentInteractionListener {
+        PersonInfoFragment.OnFragmentInteractionListener,
+        ReviewFragment.OnFragmentInteractionListener {
 
     private String TAG = ReserveActivity.class.getSimpleName();
     private BottomNavigationView navigation;
@@ -58,6 +62,8 @@ public class ReserveActivity extends AsaActivity
     private int mCalcDiscount;
     private int mCalcTotalPrice;
     private int mCalcMustPay;
+
+    private Reserve5MinResponse mReserve5MinResponse;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -85,7 +91,7 @@ public class ReserveActivity extends AsaActivity
 
                     stepCalcPrice();
 
-                    if (mCalcRooms <= 0){
+                    if (mCalcRooms <= 0) {
 
                         AlertDialog dialog = new AlertDialog.Builder(ReserveActivity.this)
                                 .setMessage("ابتدا اطلاعات رزرو را تعیین کنید.")
@@ -109,15 +115,29 @@ public class ReserveActivity extends AsaActivity
                     return true;
                 case R.id.navigation_review_and_payment:
                     invalidateOptionsMenu();
-                    return true;
+
+                    if (mReserve5MinResponse == null) {
+                        Log.e(TAG, "stepReserve15Min: Error: Response5Min is null", new Throwable());
+                        return false;
+                    }
+
+                    if (personInfoFragment.isValid()) {
+                        stepReserve15Min();
+                        return true;
+                    }else{
+                        return false;
+                    }
             }
             return false;
         }
     };
-    private Callback<Reserve5MinRespose> callbackReserve5Min = new Callback<Reserve5MinRespose>() {
+
+    private Callback<Reserve5MinResponse> callbackReserve5Min = new Callback<Reserve5MinResponse>() {
         @Override
-        public void onResponse(Call<Reserve5MinRespose> call, Response<Reserve5MinRespose> response) {
+        public void onResponse(Call<Reserve5MinResponse> call, Response<Reserve5MinResponse> response) {
             Log.d(TAG, "onResponse: " + response.body());
+
+            mReserve5MinResponse = response.body();
 
             if (personInfoFragment == null) {
                 personInfoFragment = PersonInfoFragment.newInstance();
@@ -130,7 +150,7 @@ public class ReserveActivity extends AsaActivity
         }
 
         @Override
-        public void onFailure(Call<Reserve5MinRespose> call, Throwable t) {
+        public void onFailure(Call<Reserve5MinResponse> call, Throwable t) {
             Log.d(TAG, "onFailure: reserve 5 min", t);
         }
     };
@@ -187,13 +207,13 @@ public class ReserveActivity extends AsaActivity
         loading.setVisibility(View.INVISIBLE);
     }
 
-    private void resetCalcPriceDetails(){
+    private void resetCalcPriceDetails() {
         mCalcRooms = 0;
         mCalcAdults = 0;
         mCalcChilds = 0;
         mCalcExtraBeds = 0;
         mCalcStartDate = from_date;
-        mCalcEndDate =Asa.getToDate(from_date, night_numbers);
+        mCalcEndDate = Asa.getToDate(from_date, night_numbers);
         mCalcDiscount = 0;
         mCalcTotalPrice = 0;
         mCalcMustPay = 0;
@@ -274,13 +294,13 @@ public class ReserveActivity extends AsaActivity
             for (int j = 0; j < Integer.parseInt(night_numbers); j++) {
 
                 int roomPrice = model.selectedRoomsCount *
-                        Integer.parseInt(model.iranian_daily_board_rate.get(j));
+                        Integer.parseInt(model.iranian_daily_board_rate_TSI.get(j));
 
                 int extraChildPrice = remainChildForExtraBeds *
-                        Integer.parseInt(model.iranian_child_rate.get(j));
+                        Integer.parseInt(model.iranian_child_rate_TSI.get(j));
 
                 int extraAdultPrice = remainAdultForExtraBeds *
-                        Integer.parseInt(model.iranian_extra_bed_rate.get(j));
+                        Integer.parseInt(model.iranian_extra_bed_rate_TSI.get(j));
 
                 totalPrice += roomPrice + extraChildPrice + extraAdultPrice;
 
@@ -309,7 +329,7 @@ public class ReserveActivity extends AsaActivity
         mCalcChilds = calcChilds;
         mCalcExtraBeds = calcExtraBeds;
         mCalcStartDate = calcStartDate;
-        mCalcEndDate =calcEndDate;
+        mCalcEndDate = calcEndDate;
         mCalcDiscount = calcDiscount;
         mCalcTotalPrice = calcTotalPrice;
         mCalcMustPay = calcTotalPrice - calcDiscount;
@@ -347,7 +367,7 @@ public class ReserveActivity extends AsaActivity
      * @param uri
      */
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onCalcPriceFragmentInteraction(Uri uri) {
 
         FrameLayout calcContainer = findViewById(R.id.fragmentCalcPriceContainer);
         ExpandOrCollapseView.collapse(calcContainer);
@@ -421,8 +441,74 @@ public class ReserveActivity extends AsaActivity
                 stepShowCalcPrice(mCalcRooms, mCalcChilds, mCalcAdults, mCalcExtraBeds,
                         mCalcStartDate, mCalcEndDate, mCalcDiscount, mCalcTotalPrice);
                 break;
+            case R.id.menu_save_personal_info:
+
+//                stepReserve15Min();
+
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private Callback<Reserve15MinResponse> callbackReserve15Min = new Callback<Reserve15MinResponse>() {
+        @Override
+        public void onResponse(Call<Reserve15MinResponse> call, Response<Reserve15MinResponse> response) {
+            Log.d(TAG, "onResponse Reserve15Min: " + response.body());
+
+            loading.setVisibility(View.INVISIBLE);
+
+            if (reviewFragment == null) {
+                reviewFragment = reviewFragment.newInstance();
+            }
+
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragmentContainer, reviewFragment);
+            fragmentTransaction.commit();
+
+
+        }
+
+        @Override
+        public void onFailure(Call<Reserve15MinResponse> call, Throwable t) {
+            Log.d(TAG, "onFailure Reserve15Min: ", t);
+            loading.setVisibility(View.INVISIBLE);
+        }
+    };
+
+
+    private void stepReserve15Min() {
+
+
+        List<ReserveDetail> reserveDetails = new ArrayList<>();
+
+        ReserveDetail reserveDetail = new ReserveDetail();
+        reserveDetail.last_name = personInfoFragment.family.getText().toString();
+        reserveDetail.first_name = personInfoFragment.name.getText().toString();
+        reserveDetail.melli_code = personInfoFragment.codemelli.getText().toString();
+        reserveDetail.adress = personInfoFragment.city.getText().toString();
+        reserveDetail.adress += " - " + personInfoFragment.address.getText().toString();
+        reserveDetail.mobile = personInfoFragment.phone.getText().toString();
+        reserveDetail.source = personInfoFragment.city.getText().toString();
+        reserveDetail.transfer = "";
+        reserveDetail.travel_with = "";
+        reserveDetail.nation = "";
+        reserveDetail.message = "ندارد";
+        reserveDetail.flight_number = "";
+        reserveDetail.flight_time = "";
+        reserveDetail.clerk = "0";
+        reserveDetail.telephone = "";
+
+        reserveDetails.add(reserveDetail);
+
+        loading.setVisibility(View.VISIBLE);
+
+        AsaService.putReserve15Min(
+                Integer.toString(mReserve5MinResponse.message.id_reserve_asa),
+                Integer.toString(mReserve5MinResponse.message.id_reserve_hotel),
+                reserveDetails,
+                callbackReserve15Min);
+
+
     }
 
     @Override
@@ -441,6 +527,12 @@ public class ReserveActivity extends AsaActivity
     @Override
     public void onPersonFragmentInteraction() {
 
+
+    }
+
+
+    @Override
+    public void onReviewFragmentInteraction(Uri uri) {
 
     }
 }

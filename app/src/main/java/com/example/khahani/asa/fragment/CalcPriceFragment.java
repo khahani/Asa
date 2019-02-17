@@ -114,7 +114,7 @@ public class CalcPriceFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mListener != null){
-                    mListener.onFragmentInteraction(null);
+                    mListener.onCalcPriceFragmentInteraction(null);
                 }
             }
         });
@@ -150,10 +150,9 @@ public class CalcPriceFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onCalcPriceFragmentInteraction(uri);
         }
     }
 
@@ -185,7 +184,6 @@ public class CalcPriceFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onCalcPriceFragmentInteraction(Uri uri);
     }
 }

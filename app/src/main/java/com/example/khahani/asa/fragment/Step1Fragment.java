@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.khahani.asa.R;
 import com.example.khahani.asa.databinding.FragmentStep1Binding;
+import com.example.khahani.asa.utils.Asa;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.text.Format;
@@ -51,20 +52,22 @@ public class Step1Fragment extends Fragment {
 
     private void updateToDate(int numberNights) {
         if (!mBinding.editTextFromDate.getText().toString().equals("")) {
-            PersianCalendar calendar = new PersianCalendar();
-            calendar.parse(mBinding.editTextFromDate.getText().toString());
-            calendar.addPersianDate(PersianCalendar.DAY_OF_MONTH, numberNights);
-            int day = calendar.getPersianDay();
-            int month = calendar.getPersianMonth();
-            int year = calendar.getPersianYear();
-            mBinding.editTextToDate.setText(year + "/" + month + "/" + day);
+//            PersianCalendar calendar = new PersianCalendar();
+//            calendar.parse(mBinding.editTextFromDate.getText().toString());
+//            calendar.addPersianDate(PersianCalendar.DAY_OF_MONTH, numberNights);
+//            int day = calendar.getPersianDay();
+//            int month = calendar.getPersianMonth();
+//            int year = calendar.getPersianYear();
+//            mBinding.editTextToDate.setText(year + "/" + month + "/" + day);
+            mBinding.editTextToDate.setText(
+                    Asa.getToDate(mBinding.editTextFromDate.getText().toString(),
+                            Integer.toString(numberNights)));
         }
     }
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -82,7 +85,7 @@ public class Step1Fragment extends Fragment {
     private View.OnClickListener mOnClickListenerButtonNext = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mListener !=null){
+            if (mListener != null) {
                 mListener.nextStep(
                         mBinding.editTextFromDate.getText().toString(),
                         mBinding.spinnerNumberNights.getSelectedItemPosition() + 1
@@ -104,7 +107,6 @@ public class Step1Fragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment Step1Fragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static Step1Fragment newInstance(String param1, String param2) {
         Step1Fragment fragment = new Step1Fragment();
         Bundle args = new Bundle();
@@ -162,7 +164,7 @@ public class Step1Fragment extends Fragment {
         mListener = null;
     }
 
-    public void updateEditTextFromDate(String text){
+    public void updateEditTextFromDate(String text) {
         mBinding.editTextFromDate.setText(text);
         updateToDate(mBinding.spinnerNumberNights.getSelectedItemPosition() + 1);
     }
@@ -179,6 +181,7 @@ public class Step1Fragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void pickFromDate(View view);
+
         void nextStep(String fromDate, int numberNights);
     }
 }

@@ -25,7 +25,9 @@
         <activity
             android:name=".activity.ReserveActivity"
             android:label="@string/title_activity_reserve" />
-        <activity android:name=".activity.PrintActivity"></activity>
+        <activity android:name=".activity.PrintActivity">
+
+        </activity>
         <activity android:name=".activity.PaymentActivity">
 
         </activity>
