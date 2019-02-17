@@ -61,4 +61,5 @@ dependencies {
     implementation files('libs/PaxGLPage_V1.00.04_20170420.jar')
     implementation files('libs/PaxNeptuneLiteApi_V2.01.00_20171025.jar')
     implementation 'com.ibm.icu:icu4j:63.1'
+    implementation 'com.airbnb.android:lottie:2.7.0'
 }

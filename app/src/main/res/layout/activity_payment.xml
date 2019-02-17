@@ -7,27 +7,16 @@
     android:layoutDirection="rtl"
     tools:context="com.example.khahani.asa.activity.PaymentActivity">
 
-    <EditText
-        android:id="@+id/editTextAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="مبلغ"
-        android:inputType="number"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        />
-
-    <Button
-        android:id="@+id/buttonPayment"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/editTextAmount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="8dp"
-        android:text="پرداخت"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="payment.json"
+        app:lottie_loop="true" />
 
 </android.support.constraint.ConstraintLayout>

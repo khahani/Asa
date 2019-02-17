@@ -457,13 +457,19 @@ public class ReserveActivity extends AsaActivity
 
             loading.setVisibility(View.INVISIBLE);
 
-            if (reviewFragment == null) {
-                reviewFragment = reviewFragment.newInstance();
-            }
+//            if (reviewFragment == null) {
+//                reviewFragment = reviewFragment.newInstance();
+//            }
+//
+//            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//            fragmentTransaction.replace(R.id.fragmentContainer, reviewFragment);
+//            fragmentTransaction.commit();
 
-            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragmentContainer, reviewFragment);
-            fragmentTransaction.commit();
+            Intent intent = new Intent(ReserveActivity.this, PaymentActivity.class);
+
+            intent.putExtra("amount", Integer.toString(mCalcMustPay));
+
+            startActivity(intent);
 
 
         }
