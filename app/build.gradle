@@ -62,4 +62,5 @@ dependencies {
     implementation files('libs/PaxNeptuneLiteApi_V2.01.00_20171025.jar')
     implementation 'com.ibm.icu:icu4j:63.1'
     implementation 'com.airbnb.android:lottie:2.7.0'
+    implementation 'com.annimon:stream:1.2.1'
 }

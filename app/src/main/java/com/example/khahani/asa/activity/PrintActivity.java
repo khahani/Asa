@@ -1,8 +1,6 @@
 package com.example.khahani.asa.activity;
 
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,11 +16,6 @@ import com.example.khahani.asa.utils.PrinterUtils;
 import com.pax.dal.IDAL;
 import com.pax.dal.IPrinter;
 import com.pax.dal.exceptions.PrinterDevException;
-import com.pax.gl.page.IPage;
-import com.pax.gl.page.PaxGLPage;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class PrintActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -82,9 +75,9 @@ public class PrintActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public Bitmap generateBitmapByLayout() {
-        View view = this.getLayoutInflater().inflate(R.layout.pars_receipt_sample, null);
-        TextView tv = view.findViewById(R.id.merchant_name_label);
-        tv.setTypeface(FontManager.getInstance().getPersianFont());
+        View view = this.getLayoutInflater().inflate(R.layout.pars_receipt, null);
+//        TextView tv = view.findViewById(R.id.merchant_name_label);
+//        tv.setTypeface(FontManager.getInstance().getPersianFont());
 
 
         return PrinterUtils.convertViewToBitmap(view);

@@ -140,6 +140,9 @@ public class Step1Fragment extends Fragment {
         mBinding.spinnerNumberNights.setAdapter(adapter);
         mBinding.spinnerNumberNights.setOnItemSelectedListener(mOnItemSelectedListener);
 
+        PersianCalendar now = new PersianCalendar();
+        mBinding.editTextFromDate.setText(now.getPersianYear() + "/" + (now.getPersianMonth() + 1) +"/" + now.getPersianDay());
+
         mBinding.editTextFromDate.setOnClickListener(mOnClickListenerFromDate);
 
         mBinding.buttonNext.setOnClickListener(mOnClickListenerButtonNext);

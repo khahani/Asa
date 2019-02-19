@@ -9,8 +9,12 @@ import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -83,6 +87,17 @@ public interface ApiService {
 
     @POST("reserve")
     Call<Reserve5MinResponse> postReserve5Min(
+            @Query("access_key_id") String access_key_id,
+            @Query("signature") String signature,
+            @Query("version") String version,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("id_hotel") String id_hotel,
+            @Query("from_date") String from_date,
+            @Query("to_date") String to_date,
+            @QueryMap() Map<String, String> room_detail);
+
+    @POST("reserve")
+    Call<JSONObject> postReserve5Min2(
             @Query("access_key_id") String access_key_id,
             @Query("signature") String signature,
             @Query("version") String version,

@@ -3,6 +3,8 @@ package com.example.khahani.asa.utils;
 
 import android.util.Log;
 
+import com.annimon.stream.IntStream;
+import com.annimon.stream.function.IntUnaryOperator;
 import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.ibm.icu.text.DateFormat;
@@ -287,5 +289,19 @@ public class Asa {
         }
 
         return map;
+    }
+
+    public static boolean isValidIranianNationalCode(String codemelli) {
+        if (!codemelli.matches("^\\d{10}$"))
+            return false;
+
+        int check = Integer.parseInt(codemelli.substring(9, 10));
+
+        int sum = IntStream.range(0, 9)
+                .map((IntUnaryOperator) x ->
+                        Integer.parseInt(codemelli.substring(x, x + 1)) * (10 - x))
+                .sum() % 11;
+
+        return (sum < 2 && check == sum) || (sum >= 2 && check + sum == 11);
     }
 }

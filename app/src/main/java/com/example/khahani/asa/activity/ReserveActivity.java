@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.khahani.asa.AsaActivity;
 import com.example.khahani.asa.R;
@@ -23,15 +25,21 @@ import com.example.khahani.asa.fragment.ReviewFragment;
 import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
+import com.example.khahani.asa.model.reserve5min.Reserve5MinResponseFailed;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.Message;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
 import com.example.khahani.asa.utils.ExpandOrCollapseView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +72,7 @@ public class ReserveActivity extends AsaActivity
     private int mCalcMustPay;
 
     private Reserve5MinResponse mReserve5MinResponse;
+    private Reserve15MinResponse mReserve15MinResponse;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -91,7 +100,7 @@ public class ReserveActivity extends AsaActivity
 
                     stepCalcPrice();
 
-                    if (mCalcRooms <= 0) {
+                    if (mCalcRooms <= 0 || mCalcAdults <= 0) {
 
                         AlertDialog dialog = new AlertDialog.Builder(ReserveActivity.this)
                                 .setMessage("ابتدا اطلاعات رزرو را تعیین کنید.")
@@ -115,13 +124,7 @@ public class ReserveActivity extends AsaActivity
                     return true;
                 case R.id.navigation_review_and_payment:
                     invalidateOptionsMenu();
-
-                    if (mReserve5MinResponse == null) {
-                        Log.e(TAG, "stepReserve15Min: Error: Response5Min is null", new Throwable());
-                        return false;
-                    }
-
-                    if (personInfoFragment.isValid()) {
+                    if (shouldBeginStepReserve15Min()){
                         stepReserve15Min();
                         return true;
                     }else{
@@ -132,10 +135,36 @@ public class ReserveActivity extends AsaActivity
         }
     };
 
+    private boolean shouldBeginStepReserve15Min() {
+        if (mReserve5MinResponse == null) {
+            Log.e(TAG, "stepReserve15Min: Error: Response5Min is null", new Throwable());
+            return false;
+        }
+
+        if (personInfoFragment.isValid()) {
+            return true;
+        }else{
+            AlertDialog dialog = new AlertDialog.Builder(ReserveActivity.this)
+                    .setTitle("تکمیل اطلاعات")
+                    .setMessage("اطلاعات فرم بدرستی وارد نشده است")
+                    .setPositiveButton("اصلاح اطلاعات", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+            return false;
+        }
+    }
+
     private Callback<Reserve5MinResponse> callbackReserve5Min = new Callback<Reserve5MinResponse>() {
         @Override
         public void onResponse(Call<Reserve5MinResponse> call, Response<Reserve5MinResponse> response) {
             Log.d(TAG, "onResponse: " + response.body());
+
+            loading.setVisibility(View.INVISIBLE);
 
             mReserve5MinResponse = response.body();
 
@@ -152,13 +181,15 @@ public class ReserveActivity extends AsaActivity
         @Override
         public void onFailure(Call<Reserve5MinResponse> call, Throwable t) {
             Log.d(TAG, "onFailure: reserve 5 min", t);
+            Toast.makeText(ReserveActivity.this, "Network Failed", Toast.LENGTH_SHORT).show();
+            loading.setVisibility(View.INVISIBLE);
+            navigation.setSelectedItemId(R.id.navigation_reserver_room);
         }
     };
 
     private void stepReserve5Min() {
 
         List<RoomDetail> roomDetails = new ArrayList<>();
-
 
         for (int i = 0; i < selectedRoomDetails.size(); i++) {
 
@@ -177,6 +208,8 @@ public class ReserveActivity extends AsaActivity
             }
             roomDetails.add(roomDetail);
         }
+
+        loading.setVisibility(View.VISIBLE);
 
         AsaService.postReserve5Min(id_hotel, mCalcStartDate, mCalcEndDate, roomDetails, callbackReserve5Min);
 
@@ -337,6 +370,13 @@ public class ReserveActivity extends AsaActivity
     }
 
     private void stepShowCalcPrice(int calcRooms, int calcChilds, int calcAdults, int calcExtraBeds, String calcStartDate, String calcEndDate, int calcDiscount, int calcTotalPrice) {
+
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         calcPriceFragment = CalcPriceFragment.newInstance(Integer.toString(calcRooms),
                 Integer.toString(calcChilds),
                 Integer.toString(calcAdults),
@@ -426,9 +466,16 @@ public class ReserveActivity extends AsaActivity
                 menu.findItem(R.id.menu_calc_price).setVisible(true);
                 menu.findItem(R.id.menu_save_personal_info).setVisible(false);
             } else if (navigation.getSelectedItemId() == R.id.navigation_personal_info) {
-                menu.findItem(R.id.menu_calc_price).setVisible(false);
-                menu.findItem(R.id.menu_save_personal_info).setVisible(true);
+                menu.findItem(R.id.menu_calc_price).setVisible(true);
+                menu.findItem(R.id.menu_save_personal_info).setVisible(false);
+            }else if(navigation.getSelectedItemId() == R.id.navigation_review_and_payment){
+                menu.findItem(R.id.menu_calc_price).setVisible(true);
+                menu.findItem(R.id.menu_save_personal_info).setVisible(false);
             }
+//            else if (navigation.getSelectedItemId() == R.id.navigation_personal_info) {
+//                menu.findItem(R.id.menu_calc_price).setVisible(false);
+//                menu.findItem(R.id.menu_save_personal_info).setVisible(true);
+//            }
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -455,6 +502,7 @@ public class ReserveActivity extends AsaActivity
         public void onResponse(Call<Reserve15MinResponse> call, Response<Reserve15MinResponse> response) {
             Log.d(TAG, "onResponse Reserve15Min: " + response.body());
 
+            mReserve15MinResponse = response.body();
             loading.setVisibility(View.INVISIBLE);
 
 //            if (reviewFragment == null) {
@@ -468,6 +516,41 @@ public class ReserveActivity extends AsaActivity
             Intent intent = new Intent(ReserveActivity.this, PaymentActivity.class);
 
             intent.putExtra("amount", Integer.toString(mCalcMustPay));
+            //Hotel Info
+            intent.putExtra("hotel_id", selectedRoomDetails.get(0).hotel_id);
+            intent.putExtra("hotel_persian_name", getIntent().getStringExtra("hotel_persian_name"));
+            intent.putExtra("hotelAddress", getIntent().getStringExtra("hotelAddress"));
+            intent.putExtra("hotelPhone", "051335----4");
+            //QRCODE Info
+            
+            //Reserve Info
+
+            intent.putExtra("fromDate", from_date);
+            intent.putExtra("nightNumbers", night_numbers);
+
+            intent.putExtra("reserveName", personInfoFragment.name.getText().toString());
+            intent.putExtra("reserveFamily", personInfoFragment.family.getText().toString());
+            intent.putExtra("reservePhone", personInfoFragment.phone.getText().toString());
+            intent.putExtra("reserveCodeMelli", personInfoFragment.codemelli.getText().toString());
+
+            intent.putExtra("id_reserve_asa", mReserve15MinResponse.message.id_reserve_asa);
+            intent.putExtra("id_reserve_hotel", mReserve15MinResponse.message.id_reserve_hotel);
+
+            int roomCount = 0;
+
+            for (int i = 0; i < selectedRoomDetails.size(); i++) {
+                if (selectedRoomDetails.get(i).selectedRoomsCount > 0) {
+                    intent.putExtra("room_kind_name_" + roomCount, selectedRoomDetails.get(i).room_kind_name);
+                    intent.putExtra("foodType_" + roomCount, "breakfast / fullboard");
+                    intent.putExtra("selectedRoomsCount_" + roomCount, selectedRoomDetails.get(i).selectedRoomsCount);
+                    intent.putExtra("selectedAdultsCount_" + roomCount, selectedRoomDetails.get(i).selectedAdultsCount);
+                    intent.putExtra("selectedChildsCount_" + roomCount, selectedRoomDetails.get(i).selectedChildsCount);
+                    roomCount++;
+                }
+            }
+            intent.putExtra("roomCount", roomCount);
+
+
 
             startActivity(intent);
 
@@ -491,10 +574,9 @@ public class ReserveActivity extends AsaActivity
         reserveDetail.last_name = personInfoFragment.family.getText().toString();
         reserveDetail.first_name = personInfoFragment.name.getText().toString();
         reserveDetail.melli_code = personInfoFragment.codemelli.getText().toString();
-        reserveDetail.adress = personInfoFragment.city.getText().toString();
-        reserveDetail.adress += " - " + personInfoFragment.address.getText().toString();
+        reserveDetail.adress = "";// + personInfoFragment.address.getText().toString();
         reserveDetail.mobile = personInfoFragment.phone.getText().toString();
-        reserveDetail.source = personInfoFragment.city.getText().toString();
+        reserveDetail.source = "";//personInfoFragment.city.getText().toString();
         reserveDetail.transfer = "";
         reserveDetail.travel_with = "";
         reserveDetail.nation = "";
@@ -514,7 +596,6 @@ public class ReserveActivity extends AsaActivity
                 reserveDetails,
                 callbackReserve15Min);
 
-
     }
 
     @Override
@@ -533,6 +614,9 @@ public class ReserveActivity extends AsaActivity
     @Override
     public void onPersonFragmentInteraction() {
 
+        if (shouldBeginStepReserve15Min()){
+            stepReserve15Min();
+        }
 
     }
 

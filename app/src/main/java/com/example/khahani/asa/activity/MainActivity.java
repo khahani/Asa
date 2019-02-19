@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.khahani.asa.AsaActivity;
@@ -47,6 +48,8 @@ public class MainActivity extends AsaActivity
         setContentView(R.layout.activity_main);
 
         loading = findViewById(R.id.loading);
+
+        PersianCalendar now = new PersianCalendar();
 
         init();
 
@@ -99,6 +102,7 @@ public class MainActivity extends AsaActivity
     public void onListFragmentInteraction(com.example.khahani.asa.model.hotels_date.Message hotel) {
         Intent intent = new Intent(MainActivity.this, ReserveActivity.class);
         intent.putExtra("hotel_persian_name", hotel.persian_name);
+        intent.putExtra("hotelAddress", hotel.address);
         intent.putExtra("id_hotel", hotel.id);
         intent.putExtra("id_city", id_city);
         intent.putExtra("from_date", from_date);

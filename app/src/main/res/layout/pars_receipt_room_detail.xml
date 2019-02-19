@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="384px"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/room_detail_container"
+        android:layout_width="384px"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/print_sample_text"
+            android:layout_gravity="center"
+            android:id="@+id/room_type_text"
+            android:text="اتاق: دبل" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/room_number_text"
+                style="@style/print_sample_text"
+                android:layout_alignParentStart="true"
+                android:text="2" />
+
+            <TextView
+                android:id="@+id/room_number_label"
+                style="@style/print_sample_text"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/room_number_text"
+                android:text="تعداد اتاق:" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/adult_text"
+                style="@style/print_sample_text"
+                android:layout_alignParentStart="true"
+                android:text="4" />
+
+            <TextView
+                android:id="@+id/adult_label"
+                style="@style/print_sample_text"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/adult_text"
+                android:text="بزرگسال:" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/child_text"
+                style="@style/print_sample_text"
+                android:layout_alignParentStart="true"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/child_label"
+                style="@style/print_sample_text"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/child_text"
+                android:text="کودک 2-6:" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

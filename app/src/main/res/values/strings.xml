@@ -23,4 +23,5 @@
     <string name="textViewCalcDiscount">تخفیف: %1$s ریال</string>
     <string name="textViewCalcMustPay">جمع کل: %1$s ریال</string>
     <string name="title_menu_save_personal_info">ثبت و مرحله بعد</string>
+    <string name="show_lastprice">%1$s ریال</string>
 </resources>
