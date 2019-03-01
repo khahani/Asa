@@ -23,13 +23,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:src="@drawable/shahrdari" />
+                    android:src="@drawable/darkoob" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:src="@drawable/darkoob" />
+                    android:src="@drawable/shahrdari" />
 
             </LinearLayout>
 
@@ -39,20 +39,6 @@
                 android:layout_gravity="center_horizontal"
                 android:scaleY="1.5"
                 android:text="دارکوب" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-
-                    android:id="@+id/trans_type_text"
-                    style="@style/print_sample_text"
-                    android:text="شرکت آسا سیستم یگانه " />
-
-            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -289,9 +275,9 @@
             <ImageView
                 android:id="@+id/hotel_isps_image"
                 android:layout_width="wrap_content"
-                android:layout_height="60dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
-                android:src="@drawable/ipsp" />
+                android:src="@drawable/qr2" />
 
 
             <LinearLayout
