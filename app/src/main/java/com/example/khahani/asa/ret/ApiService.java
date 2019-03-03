@@ -5,6 +5,7 @@ import com.example.khahani.asa.model.capacities.CapacitiesResponse;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
+import com.example.khahani.asa.model.loginuser.LoginUserResponse;
 import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
@@ -117,5 +118,15 @@ public interface ApiService {
             @Query("client_time_stamp") String client_time_stamp,
             @Query("id_reserve_hotel") String id_reserve_hotel,
             @QueryMap() Map<String, String> reserve_detail);
+
+
+
+    @GET("loginuser")
+    Call<LoginUserResponse> getLoginUser(@Query("access_key_id") String access_key_id,
+                                         @Query("signature") String signature,
+                                         @Query("version") String version,
+                                         @Query("client_time_stamp") String client_time_stamp,
+                                         @Query("username") String username,
+                                         @Query("password") String password);
 
 }

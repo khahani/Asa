@@ -12,7 +12,10 @@ import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.ULocale;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,6 +63,8 @@ public class Asa {
 
         return null;
     }
+
+
 
     public static String getMiladiDate(String persianDate) {
 
@@ -303,5 +308,30 @@ public class Asa {
                 .sum() % 11;
 
         return (sum < 2 && check == sum) || (sum >= 2 && check + sum == 11);
+    }
+
+    public static String getMD5(String text) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(text.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

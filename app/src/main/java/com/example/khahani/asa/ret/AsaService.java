@@ -8,6 +8,7 @@ import com.example.khahani.asa.model.capacities.MessageDeserializer;
 import com.example.khahani.asa.model.cities.CitiesResponse;
 import com.example.khahani.asa.model.hotels.HotelsResponse;
 import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
+import com.example.khahani.asa.model.loginuser.LoginUserResponse;
 import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
@@ -36,6 +37,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AsaService {
+
+    private static final String VERSION = "8";
 
     public static void getCapacities(String id_city,
                                      String id_hotel,
@@ -75,21 +78,23 @@ public class AsaService {
         ApiService service = retrofit.create(ApiService.class);
 
         String to_date = Asa.getToDate(from_date, night_numbers);
-        from_date = Asa.getMiladiDate(from_date);
-        to_date = Asa.getMiladiDate(to_date);
         String id_roomkind = "0";
 
-        String[] params = {"id_city", id_city,
-                "id_hotel", id_hotel,
-                "id_roomkind", id_roomkind,
-                "from_date", from_date,
-//                "to_date",Asa.getToDate(from_date, night_numbers),
-                "to_date", to_date,
-                "from_time_stamp", "0000-00-00+00%3A00%3A00"};
+        String[] params = new String[0];
+        try {
+            params = new String[]{"id_city", id_city,
+                    "id_hotel", id_hotel,
+                    "id_roomkind", id_roomkind,
+                    "from_date", URLEncoder.encode(from_date, "utf-8"),
+                    "to_date", URLEncoder.encode(to_date, "utf-8"),
+                    "from_time_stamp", "0000-00-00+00%3A00%3A00"};
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         service.getCapacities("demo",
                 Asa.getSigniture("demo", params),
-                "6",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 id_city,
                 id_hotel,
@@ -99,49 +104,6 @@ public class AsaService {
                 to_date,
                 "0000-00-00+00%3A00%3A00"
         ).enqueue(callbackCapacities);
-    }
-
-    public static void getHotels(String id_city, String id_hotel, Callback<HotelsResponse> callbackHotels) {
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .addInterceptor(chain -> {
-                    Request request = chain.request();
-                    String string = request.url().toString();
-                    string = string.replace("%25", "%");
-                    string = string.replace("%2B", "+");
-                    Request newRequest = new Request.Builder()
-                            .url(string)
-                            .build();
-                    return chain.proceed(newRequest);
-                })
-                .build();
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(com.example.khahani.asa.model.hotels.Message.class,
-                        new com.example.khahani.asa.model.hotels.MessageDeserializer("message"))
-                .disableHtmlEscaping()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(ApiService.ASA_URL)
-                .client(client)
-                .build();
-
-        ApiService service = retrofit.create(ApiService.class);
-
-
-        String[] params = {"from_time_stamp", "0000-00-00+00%3A00%3A00",
-                "id_city", id_city, "id_hotel", id_hotel};
-
-        service.getHotels("demo",
-                Asa.getSigniture("demo", params),
-                "6",
-                "0000-00-00+00%3A00%3A00",
-                "0000-00-00+00%3A00%3A00",
-                id_city,
-                "0").enqueue(callbackHotels);
     }
 
     public static void getCities(String id_city, String id_hotel, Callback<CitiesResponse> callbackCities) {
@@ -182,7 +144,7 @@ public class AsaService {
 
         service.getCities("demo",
                 Asa.getSigniture("demo", params),
-                "6",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 "0000-00-00+00%3A00%3A00",
                 id_city,
@@ -228,7 +190,7 @@ public class AsaService {
 
         service.getRoomkinds("demo",
                 Asa.getSigniture("demo", params),
-                "6",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 "0000-00-00+00%3A00%3A00",
                 id_hotel).enqueue(callbackCities);
@@ -286,7 +248,7 @@ public class AsaService {
 
         service.getHotelsDate("demo",
                 Asa.getSigniture("demo", params),
-                "6",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 "0000-00-00+00%3A00%3A00",
                 id_city,
@@ -352,8 +314,8 @@ public class AsaService {
 
             params = new String[]{
                     "id_hotel", id_hotel,
-                    "from_date", URLEncoder.encode(Asa.getMiladiDate(from_date), "utf-8"),
-                    "to_date", URLEncoder.encode(Asa.getMiladiDate(to_date), "utf-8"),
+                    "from_date", URLEncoder.encode(from_date, "utf-8"),
+                    "to_date", URLEncoder.encode(to_date, "utf-8"),
                     roomDetailParams
             };
 
@@ -363,92 +325,14 @@ public class AsaService {
 
         service.postReserve5Min("demo",
                 Asa.getSigniture("demo", params),
-                "6",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 id_hotel,
-                Asa.getMiladiDate(from_date),
-                Asa.getMiladiDate(to_date),
+                from_date,
+                to_date,
                 Asa.roomDetailToMap(roomDetails)
         ).enqueue(callbackReserve5Min);
     }
-
-    public static void postReserve5Min2(String id_hotel,
-                                       String from_date, String to_date,
-                                       List<RoomDetail> roomDetails,
-                                       Callback<JSONObject> callbackReserve5Min) {
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .addInterceptor(chain -> {
-                    Request request = chain.request();
-
-                    String string = request.url().toString();
-                    string = string.replace("%25", "%");
-
-                    string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
-
-                    Log.d("TAG", "postReserve5Min: " + string);
-
-                    Request newRequest = new Request.Builder()
-                            .url(string)
-                            .post(request.body())
-                            .build();
-
-                    return chain.proceed(newRequest);
-                })
-                .addInterceptor(logging)
-                .build();
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(com.example.khahani.asa.model.reserve5min.Message.class,
-                        new com.example.khahani.asa.model.reserve5min.MessageDeserializer("message"))
-                .disableHtmlEscaping()
-                .create();
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(ApiService.ASA_URL)
-                .client(client)
-                .build();
-
-        ApiService service = retrofit.create(ApiService.class);
-
-
-        String[] params = new String[0];
-        try {
-
-            String roomDetailParams = URLEncoder.encode(Asa.roomDetailToUrl(roomDetails), "utf-8");
-            roomDetailParams = roomDetailParams.replace("%3D", "=");
-            roomDetailParams = roomDetailParams.replace("%26", "&");
-
-            params = new String[]{
-                    "id_hotel", id_hotel,
-                    "from_date", URLEncoder.encode(Asa.getMiladiDate(from_date), "utf-8"),
-                    "to_date", URLEncoder.encode(Asa.getMiladiDate(to_date), "utf-8"),
-                    roomDetailParams
-            };
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        service.postReserve5Min2("demo",
-                Asa.getSigniture("demo", params),
-                "6",
-                "0000-00-00+00%3A00%3A00",
-                id_hotel,
-                Asa.getMiladiDate(from_date),
-                Asa.getMiladiDate(to_date),
-                Asa.roomDetailToMap(roomDetails)
-        ).enqueue(callbackReserve5Min);
-    }
-
 
     public static void putReserve15Min(String id_reserve_asa,
                                        String id_reserve_hotel,
@@ -515,10 +399,61 @@ public class AsaService {
         service.putReserve15Min(id_reserve_asa,
                 "demo",
                 Asa.getSigniture("demo", params),
-                "6",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 id_reserve_hotel,
                 Asa.reserveDetailToMap(reserveDetails)
         ).enqueue(callbackReserve15Min);
+    }
+
+    public static void getLoginUser(String username,
+                                    String password,
+                                    Callback<LoginUserResponse> callbackLoginUser) {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    String string = request.url().toString();
+                    string = string.replace("%25", "%");
+
+                    string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
+
+                    Log.d("TAG", "getLoginUser: " + string);
+
+                    Request newRequest = new Request.Builder()
+                            .url(string)
+                            .build();
+                    return chain.proceed(newRequest);
+                })
+                .build();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(com.example.khahani.asa.model.loginuser.Message.class,
+                        new com.example.khahani.asa.model.loginuser.MessageDeserializer("message"))
+                .disableHtmlEscaping()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(ApiService.ASA_URL)
+                .client(client)
+                .build();
+
+        ApiService service = retrofit.create(ApiService.class);
+
+        String md5password = Asa.getMD5(password);
+
+        String[] params = {"username", username,
+                "password", md5password};
+
+        service.getLoginUser("demo",
+                Asa.getSigniture("demo", params),
+                "8",
+                "0000-00-00+00%3A00%3A00",
+                username,
+                md5password
+        ).enqueue(callbackLoginUser);
     }
 }

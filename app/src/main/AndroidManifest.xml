@@ -15,21 +15,19 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.ReserveActivity"
             android:label="@string/title_activity_reserve" />
-        <activity android:name=".activity.PrintActivity">
-
-        </activity>
-        <activity android:name=".activity.PaymentActivity">
-
+        <activity android:name=".activity.PrintActivity" />
+        <activity android:name=".activity.PaymentActivity" />
+        <activity android:name=".activity.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -24,4 +24,10 @@
     <string name="textViewCalcMustPay">جمع کل: %1$s ریال</string>
     <string name="title_menu_save_personal_info">ثبت و مرحله بعد</string>
     <string name="show_lastprice">%1$s ریال</string>
+    <string name="title_activity_login">ورود</string>
+    <!-- Strings related to login -->
+    <string name="action_sign_in_short">ورود</string>
+    <string name="username">نام کاربری</string>
+    <string name="password">رمز عبور</string>
+    <string name="action_sign_in">ورود</string>
 </resources>

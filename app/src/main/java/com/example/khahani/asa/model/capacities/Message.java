@@ -40,5 +40,11 @@ public class Message {
     public String iranian_special_board_net;
     @SerializedName("iranian_special_board_net_TSI")
     public String iranian_special_board_net_TSI;
+    @SerializedName("lunch_person")
+    public String lunch_person;
+    @SerializedName("dinner_person")
+    public String dinner_person;
+    @SerializedName("lunch_dinner_person")
+    public String lunch_dinner_person;
 
 }
