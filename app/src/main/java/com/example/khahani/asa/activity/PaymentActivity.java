@@ -163,6 +163,9 @@ public class PaymentActivity extends AsaActivity
             for (String key : resultData.keySet()) {
                 try {
                     Log.d("Bundle " + key, resultData.get(key).toString());
+
+                    // TODO: 3/4/2019 If payment confirm call asa services then activate print button
+
                 } catch (Exception e) {
                     if (key != null)
                         Log.e("bundle key", key + " is null");
