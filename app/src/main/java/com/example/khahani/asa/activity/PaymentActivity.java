@@ -243,36 +243,6 @@ public class PaymentActivity extends AsaActivity
         }
     }
 
-    private void print() {
-        try {
-            Bundle data = new Bundle();
-
-            data.putString("RRN", "726122996185");
-            data.putString("TransDate", "20170912");
-            data.putString("TraceNo", "996185");
-            data.putString("Issuer", "شهر");
-            data.putString("MaskedPan", "603765***4056");
-            data.putString("Amount", "10000");
-            data.putString("Lang", "FA");
-            data.putString("Currency", "IRR");
-
-            data.putString("VoucherSerial", "123123123123");
-
-            data.putString("BillId", "887977897789");
-            data.putString("BillPayId", "7601200");
-
-
-            PahpatHelper.printReceipt(
-                    PaymentActivity.this,
-                    receiverHandler,
-                    7, //1: purchase , 6: voucher , 7: bill
-                    data
-            );
-        } catch (PahpatHelper.PahpatException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         // Check which request we're responding to
