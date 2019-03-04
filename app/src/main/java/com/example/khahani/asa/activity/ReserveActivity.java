@@ -19,27 +19,22 @@ import android.widget.Toast;
 import com.example.khahani.asa.AsaActivity;
 import com.example.khahani.asa.R;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
+import com.example.khahani.asa.fragment.PersonInfoFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReserveRoomViewModel;
 import com.example.khahani.asa.fragment.ReviewFragment;
 import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
-import com.example.khahani.asa.model.reserve5min.Reserve5MinResponseFailed;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
 import com.example.khahani.asa.model.roomkinds.Message;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
 import com.example.khahani.asa.utils.ExpandOrCollapseView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -6,26 +6,21 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.example.khahani.asa.activity.PersonInfoFragment;
+import com.example.khahani.asa.fragment.PersonInfoFragment;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.CityFragment;
 import com.example.khahani.asa.fragment.HotelFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReviewFragment;
 import com.example.khahani.asa.fragment.Step1Fragment;
-import com.example.khahani.asa.fragment.Step1FragmentViewModel;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
-
-import java.lang.reflect.Type;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 

@@ -1,7 +1,6 @@
-package com.example.khahani.asa.activity;
+package com.example.khahani.asa.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
@@ -17,10 +16,10 @@ import com.example.khahani.asa.utils.Asa;
 
 
 public class PersonInfoFragment extends Fragment {
-    EditText name;
-    EditText family;
-    EditText codemelli;
-    EditText phone;
+    public EditText name;
+    public EditText family;
+    public EditText codemelli;
+    public EditText phone;
 //    EditText city;
 //    EditText address;
 
