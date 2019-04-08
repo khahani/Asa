@@ -1,6 +1,7 @@
 package com.example.khahani.asa.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.khahani.asa.R;
+import com.example.khahani.asa.activity.ReserveExtraCoddingCityActivity;
 import com.example.khahani.asa.databinding.FragmentStep1Binding;
 import com.example.khahani.asa.utils.Asa;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
@@ -49,6 +51,15 @@ public class Step1Fragment extends Fragment {
 
                 }
             };
+
+    private View.OnClickListener mOnClickListenerButtonExtra = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mListener.extraCoddingCity(
+                    mBinding.editTextFromDate.getText().toString(),
+                    mBinding.spinnerNumberNights.getSelectedItemPosition() + 1);
+        }
+    };
 
     private void updateToDate(int numberNights) {
         if (!mBinding.editTextFromDate.getText().toString().equals("")) {
@@ -141,11 +152,13 @@ public class Step1Fragment extends Fragment {
         mBinding.spinnerNumberNights.setOnItemSelectedListener(mOnItemSelectedListener);
 
         PersianCalendar now = new PersianCalendar();
-        mBinding.editTextFromDate.setText(now.getPersianYear() + "/" + (now.getPersianMonth() + 1) +"/" + now.getPersianDay());
+        mBinding.editTextFromDate.setText(now.getPersianYear() + "/" + (now.getPersianMonth() + 1) + "/" + now.getPersianDay());
 
         mBinding.editTextFromDate.setOnClickListener(mOnClickListenerFromDate);
 
         mBinding.buttonNext.setOnClickListener(mOnClickListenerButtonNext);
+
+        mBinding.buttonExtra.setOnClickListener(mOnClickListenerButtonExtra);
 
         return mBinding.getRoot();
     }
@@ -186,5 +199,7 @@ public class Step1Fragment extends Fragment {
         void pickFromDate(View view);
 
         void nextStep(String fromDate, int numberNights);
+
+        void extraCoddingCity(String fromDate, int numberNights);
     }
 }

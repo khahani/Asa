@@ -172,6 +172,15 @@ public class MainActivity extends AsaActivity
         step2();
     }
 
+    @Override
+    public void extraCoddingCity(String fromDate, int numberNights) {
+        Intent intent = new Intent(this, ReserveExtraCoddingCityActivity.class);
+        intent.putExtra("from_date", fromDate);
+        intent.putExtra("to_date", Asa.getToDate(fromDate, Integer.toString(numberNights)));
+        intent.putExtra("id_city", id_city);
+        startActivity(intent);
+    }
+
     /*       Step1 end        */
 
 
