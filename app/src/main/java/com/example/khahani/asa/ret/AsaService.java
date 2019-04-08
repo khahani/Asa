@@ -13,6 +13,7 @@ import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
+import com.example.khahani.asa.model.reserve_extra_codding.ReserveExtraCoddingResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 import com.example.khahani.asa.utils.Asa;
 import com.google.gson.Gson;
@@ -450,10 +451,76 @@ public class AsaService {
 
         service.getLoginUser("demo",
                 Asa.getSigniture("demo", params),
-                "8",
+                VERSION,
                 "0000-00-00+00%3A00%3A00",
                 username,
                 md5password
         ).enqueue(callbackLoginUser);
+    }
+
+    public static void getReserveExtraCodding(String from_date,
+                                    String to_date,
+                                    String id_hotel,
+                                    Callback<ReserveExtraCoddingResponse> callbackReserveExtraCoddingResponse) {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    String string = request.url().toString();
+                    string = string.replace("%25", "%");
+
+                    string = string.replace("0000-00-00%2B00%3A00%3A00", "0000-00-00+00%3A00%3A00");
+
+                    Log.d("TAG", "getReserveExtraCodding: " + string);
+
+                    Request newRequest = new Request.Builder()
+                            .url(string)
+                            .build();
+                    return chain.proceed(newRequest);
+                })
+                .build();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(com.example.khahani.asa.model.reserve_extra_codding.Message.class,
+                        new com.example.khahani.asa.model.reserve_extra_codding.MessageDeserializer("message"))
+                .disableHtmlEscaping()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(ApiService.ASA_URL)
+                .client(client)
+                .build();
+
+        String[] params = new String[0];
+        try {
+            params = new String[]{
+                    "from_date", URLEncoder.encode(from_date, "utf-8"),
+                    "to_date", URLEncoder.encode(to_date, "utf-8"),
+                    "id_hotel", id_hotel
+                    };
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        ApiService service = retrofit.create(ApiService.class);
+
+        try {
+
+            service.getReserveExtraCodding("demo",
+                    Asa.getSigniture("demo", params),
+                    VERSION,
+                    "0000-00-00+00%3A00%3A00",
+                    from_date,
+                    URLEncoder.encode(to_date, "utf-8"),
+                    URLEncoder.encode(id_hotel, "utf-8")
+            ).enqueue(callbackReserveExtraCoddingResponse);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }

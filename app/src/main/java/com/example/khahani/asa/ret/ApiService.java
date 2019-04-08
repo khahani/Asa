@@ -8,6 +8,7 @@ import com.example.khahani.asa.model.hotels_date.HotelsDateResponse;
 import com.example.khahani.asa.model.loginuser.LoginUserResponse;
 import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
+import com.example.khahani.asa.model.reserve_extra_codding.ReserveExtraCoddingResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 
 import org.json.JSONArray;
@@ -30,6 +31,7 @@ import retrofit2.http.QueryMap;
 public interface ApiService {
 
     public static final String ASA_URL = "https://api.asacrs.com/asacrs/api/";
+//    public static final String ASA_URL = "http://api.hoteldari.ir/asacrs/api/";
 
     @GET("cities")
     Call<CitiesResponse> getCities(
@@ -128,5 +130,16 @@ public interface ApiService {
                                          @Query("client_time_stamp") String client_time_stamp,
                                          @Query("username") String username,
                                          @Query("password") String password);
+
+    @GET("reserve_extra_codding")
+    Call<ReserveExtraCoddingResponse> getReserveExtraCodding(
+            @Query("access_key_id") String access_key_id,
+            @Query("signature") String signature,
+            @Query("version") String version,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("from_date") String from_date,
+            @Query("to_date") String to_date,
+            @Query("id_hotel") String id_hotel
+            );
 
 }

@@ -1,7 +1,5 @@
 package com.example.khahani.asa.fragment;
 
-import android.content.res.ColorStateList;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,8 +35,7 @@ public class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).persian_name);
+        holder.mHotelName.setText(mValues.get(position).persian_name);
 
         DecimalFormat frm = new DecimalFormat("#,###,###");
         if (mValues.get(position).min_fullrate != null &&
@@ -77,8 +74,7 @@ public class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mHotelName;
         public final TextView mMinRate;
         public final AppCompatRatingBar mRatingBar;
         public Message mItem;
@@ -86,15 +82,14 @@ public class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecycler
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mHotelName = (TextView) view.findViewById(R.id.textviewHotelName);
             mMinRate = (TextView) view.findViewById(R.id.textViewMinRate);
             mRatingBar = (AppCompatRatingBar) view.findViewById(R.id.ratingBar_star);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mHotelName.getText() + "'";
         }
     }
 }

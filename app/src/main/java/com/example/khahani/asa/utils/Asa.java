@@ -65,7 +65,6 @@ public class Asa {
     }
 
 
-
     public static String getMiladiDate(String persianDate) {
 
         String[] splited = persianDate.split("/");
@@ -97,10 +96,17 @@ public class Asa {
     public static String getToDate(String from_date, String numberNights) {
 
         String[] splitedDate = from_date.split("/");
-        splitedDate[1] = Integer.toString(
-                Integer.parseInt(splitedDate[1]) - 1
-        );
-        from_date = splitedDate[0] + "/" + splitedDate[1] + "/" + splitedDate[2];
+
+        int originMonth = Integer.parseInt(splitedDate[1]);
+
+        if (originMonth == 1) {
+            from_date = splitedDate[0] + "/" + splitedDate[1] + "/" + splitedDate[2];
+        } else {
+            splitedDate[1] = Integer.toString(
+                    Integer.parseInt(splitedDate[1]) - 1
+            );
+            from_date = splitedDate[0] + "/" + splitedDate[1] + "/" + splitedDate[2];
+        }
 
         PersianCalendar calendar = new PersianCalendar();
         calendar.parse(from_date);
@@ -109,7 +115,12 @@ public class Asa {
         int day = calendar.getPersianDay();
         int month = calendar.getPersianMonth();
         int year = calendar.getPersianYear();
-        return year + "/" + (month + 1) + "/" + day;
+
+        if (originMonth == 1) {
+            return year + "/" + month + "/" + day;
+        } else {
+            return year + "/" + (month + 1) + "/" + day;
+        }
     }
 
     public static String roomDetailToUrl(List<RoomDetail> roomDetails) {
@@ -148,7 +159,7 @@ public class Asa {
 
             }
 
-            if (i != roomDetails.size() - 1){
+            if (i != roomDetails.size() - 1) {
                 builder.append("&");
             }
 

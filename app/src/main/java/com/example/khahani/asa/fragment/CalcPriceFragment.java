@@ -131,9 +131,6 @@ public class CalcPriceFragment extends Fragment {
         TextView textViewCalcMustPay = view.findViewById(R.id.textViewCalcMustPay);
 
         DecimalFormat frm = new DecimalFormat("#,###,###");
-        calcDiscount = frm.format(Integer.parseInt(calcDiscount));
-        calcMustPay = frm.format(Integer.parseInt(calcMustPay));
-        calcTotalPrice = frm.format(Integer.parseInt(calcTotalPrice));
 
         textViewCalcRooms.setText(getContext().getResources().getString(R.string.textViewCalcRooms, calcRooms));
         textViewCalcAdults.setText(getContext().getResources().getString(R.string.textViewCalcAdults, calcAdults));
@@ -141,10 +138,10 @@ public class CalcPriceFragment extends Fragment {
         textViewCalcExtraBeds.setText(getContext().getResources().getString(R.string.textViewCalcExtraBeds, calcExtraBeds));
         textViewCalcNightNumbers.setText(getContext().getResources().getString(R.string.textViewCalcNightNumbers, calcNightNumbers));
         textViewCalcStartDate.setText(getContext().getResources().getString(R.string.textViewCalcStartDate, calcStartDate));
-        textViewCalcDiscount.setText(getContext().getResources().getString(R.string.textViewCalcDiscount, calcDiscount));
+        textViewCalcDiscount.setText(getContext().getResources().getString(R.string.textViewCalcDiscount, frm.format(Integer.parseInt(calcDiscount))));
         textViewCalcEndDate.setText(getContext().getResources().getString(R.string.textViewCalcEndDate, calcEndDate));
-        textViewCalcTotalPrice.setText(getContext().getResources().getString(R.string.textViewCalcTotalPrice, calcTotalPrice));
-        textViewCalcMustPay.setText(getContext().getResources().getString(R.string.textViewCalcMustPay, calcMustPay));
+        textViewCalcTotalPrice.setText(getContext().getResources().getString(R.string.textViewCalcTotalPrice, frm.format(Integer.parseInt(calcTotalPrice))));
+        textViewCalcMustPay.setText(getContext().getResources().getString(R.string.textViewCalcMustPay, frm.format(Integer.parseInt(calcMustPay))));
 
 
         return view;

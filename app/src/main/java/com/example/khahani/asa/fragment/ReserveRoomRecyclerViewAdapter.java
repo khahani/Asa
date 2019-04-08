@@ -8,22 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.khahani.asa.R;
 import com.example.khahani.asa.fragment.ReserveRoomFragment.OnListFragmentInteractionListener;
-import com.example.khahani.asa.fragment.dummy.DummyContent.DummyItem;
 import com.example.khahani.asa.model.capacities.Message;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- */
 public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<ReserveRoomRecyclerViewAdapter.ViewHolder> {
 
 
@@ -60,6 +57,7 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
             }
         }
 
+
         holder.mTitleRoomCapcity.setText(mContext.getResources().getString(R.string.titleRoomCapacity, holder.mRoomkind.room_kind_bed));
 
         holder.mTitleRoomExtraCapcity.setText(mContext.getResources()
@@ -67,34 +65,16 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
 
         holder.mTextViewTitleRoomkindName.setText(holder.mRoomkind.persian_hotel_label);
 
-        DecimalFormat formatter = new DecimalFormat("#,###,###");
-        String iranian_daily_board_rate_TSI = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)));
-        String iranian_daily_board_rate_with_off = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)) * 80 / 100);
-        String iranian_extra_bed_rate_TSI = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_extra_bed_rate_TSI.get(0)));
-        String iranian_child_rate_TSI = formatter.format(
-                Integer.parseInt(holder.mReserveRoomViewModel.iranian_child_rate_TSI.get(0)));
 
+        if (Integer.parseInt(holder.mReserveRoomViewModel.lunch_dinner_person.get(0)) <= 0){
+            holder.mRadioButtonFullBoard.setEnabled(false);
+        }
 
-        holder.mTextViewTitleFixedBoardRate.setText(mContext.getResources()
-                .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate_TSI));
+        if (Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)) <= 0){
+            holder.mRadioButtonBreakfast.setEnabled(false);
+        }
 
-        holder.mTextViewTitleFixedBoardRate
-                .setPaintFlags(holder.mTextViewTitleFixedBoardRate.getPaintFlags() |
-                        Paint.STRIKE_THRU_TEXT_FLAG);
-
-
-        holder.mTextViewTitleFixedBoardRateWithOff.setText(mContext.getResources()
-                .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate_with_off));
-
-        holder.mTextViewTitleFixedExtraBoardRate.setText(mContext.getResources()
-                .getString(R.string.titleFixedExtraBoardRate, iranian_extra_bed_rate_TSI));
-
-        holder.mTextViewTitleFixedChildBoardRate.setText(mContext.getResources()
-                .getString(R.string.titleFixedChildBoardRate, iranian_child_rate_TSI));
-
+        stepFoodTypeAndChanges(holder);
 
         holder.mSpinnerRoomsCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -152,6 +132,83 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
                 }
             }
         });
+
+        holder.mRadioGroupFood.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                stepFoodTypeAndChanges(holder);
+
+            }
+        });
+    }
+
+    private void stepFoodTypeAndChanges(ViewHolder holder) {
+
+        holder.mReserveRoomViewModel.selectedFoodType = ReserveRoomViewModel.FOODTYPE_NONE;
+
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        holder.mTextViewTitleFixedBoardRateWithOff.setVisibility(View.VISIBLE);
+        holder.mTextViewTitleFixedExtraBoardRate.setVisibility(View.VISIBLE);
+
+        if (holder.mRadioButtonBreakfast.isChecked()) {
+
+            holder.mReserveRoomViewModel.selectedFoodType = ReserveRoomViewModel.FOODTYPE_BREAKFAST;
+
+            String iranian_daily_board_rate_TSI = formatter.format(
+                    Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)));
+            String iranian_daily_board_rate_with_off = formatter.format(
+                    Integer.parseInt(holder.mReserveRoomViewModel.iranian_daily_board_rate_TSI.get(0)) * 80 / 100);
+            String iranian_extra_bed_rate_TSI = formatter.format(
+                    Integer.parseInt(holder.mReserveRoomViewModel.iranian_extra_bed_rate_TSI.get(0)));
+            String iranian_child_rate_TSI = formatter.format(
+                    Integer.parseInt(holder.mReserveRoomViewModel.iranian_child_rate_TSI.get(0)));
+
+
+            holder.mTextViewTitleFixedBoardRate.setText(mContext.getResources()
+                    .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate_TSI));
+
+            holder.mTextViewTitleFixedBoardRate
+                    .setPaintFlags(holder.mTextViewTitleFixedBoardRate.getPaintFlags() |
+                            Paint.STRIKE_THRU_TEXT_FLAG);
+
+            holder.mTextViewTitleFixedBoardRateWithOff.setText(mContext.getResources()
+                    .getString(R.string.titleFixedBoardRate, iranian_daily_board_rate_with_off));
+
+            holder.mTextViewTitleFixedExtraBoardRate.setText(mContext.getResources()
+                    .getString(R.string.titleFixedExtraBoardRate, iranian_extra_bed_rate_TSI));
+
+            holder.mTextViewTitleFixedChildBoardRate.setText(mContext.getResources()
+                    .getString(R.string.titleFixedChildBoardRate, iranian_child_rate_TSI));
+
+        }
+
+        if (holder.mRadioButtonFullBoard.isChecked()){
+
+            holder.mReserveRoomViewModel.selectedFoodType =
+                    ReserveRoomViewModel.FOODTYPE_BREAKFAST_LUNCH_DINNER;
+
+            String lunch_dinner_person = formatter.format(
+                    Integer.parseInt(holder.mReserveRoomViewModel.lunch_dinner_person.get(0)));
+            String lunch_dinner_person_child = formatter.format(
+                    Integer.parseInt(holder.mReserveRoomViewModel.lunch_dinner_person.get(0)) / 2);
+
+
+            holder.mTextViewTitleFixedBoardRate.setText(mContext.getResources()
+                    .getString(R.string.titleFixedBoardRate, lunch_dinner_person));
+
+            holder.mTextViewTitleFixedBoardRate
+                    .setPaintFlags(holder.mTextViewTitleFixedBoardRate.getPaintFlags() &
+                            (~ Paint.STRIKE_THRU_TEXT_FLAG));
+
+            holder.mTextViewTitleFixedBoardRateWithOff.setVisibility(View.GONE);
+            holder.mTextViewTitleFixedExtraBoardRate.setVisibility(View.GONE);
+
+            holder.mTextViewTitleFixedChildBoardRate.setText(mContext.getResources()
+                    .getString(R.string.titleFixedChildBoardRate, lunch_dinner_person_child));
+
+
+        }
     }
 
     private void calcPrice(){
@@ -262,8 +319,12 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
         public final Spinner mSpinnerAdultsCount;
         public final Spinner mSpinnerChildsCount;
 
+        public final RadioGroup mRadioGroupFood;
+        public final RadioButton mRadioButtonBreakfast;
+        public final RadioButton mRadioButtonFullBoard;
 
-        //    public final TextView mContentView;
+
+        //    public final TextView mGuestRate;
         public Message mCapacity;
         public ReserveRoomViewModel mReserveRoomViewModel;
         public com.example.khahani.asa.model.roomkinds.Message mRoomkind;
@@ -281,7 +342,11 @@ public class ReserveRoomRecyclerViewAdapter extends RecyclerView.Adapter<Reserve
             mSpinnerRoomsCount = view.findViewById(R.id.spinnerRoomsCount);
             mSpinnerAdultsCount = view.findViewById(R.id.spinnerAdultsCount);
             mSpinnerChildsCount = view.findViewById(R.id.spinnerChildsCount);
-//            mContentView = (TextView) view.findViewById(R.id.content);
+
+            mRadioGroupFood = view.findViewById(R.id.radioGroupFood);
+            mRadioButtonBreakfast = view.findViewById(R.id.radioButtonBreakfastRoom);
+            mRadioButtonFullBoard = view.findViewById(R.id.radioButtonFullBoardRoom);
+
         }
 
         @Override

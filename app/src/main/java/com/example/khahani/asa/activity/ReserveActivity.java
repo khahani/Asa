@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
@@ -18,8 +20,10 @@ import android.widget.Toast;
 
 import com.example.khahani.asa.AsaActivity;
 import com.example.khahani.asa.R;
+import com.example.khahani.asa.data.UserLoginPreferencecs;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.PersonInfoFragment;
+import com.example.khahani.asa.fragment.ReserveExtraCoddingFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReserveRoomViewModel;
 import com.example.khahani.asa.fragment.ReviewFragment;
@@ -27,6 +31,7 @@ import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve15min.ReserveDetail;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.reserve5min.RoomDetail;
+import com.example.khahani.asa.model.reserve_extra_codding.ReserveExtraCoddingResponse;
 import com.example.khahani.asa.model.roomkinds.Message;
 import com.example.khahani.asa.ret.AsaService;
 import com.example.khahani.asa.utils.Asa;
@@ -43,9 +48,11 @@ public class ReserveActivity extends AsaActivity
         implements ReserveRoomFragment.OnListFragmentInteractionListener,
         CalcPriceFragment.OnFragmentInteractionListener,
         PersonInfoFragment.OnFragmentInteractionListener,
-        ReviewFragment.OnFragmentInteractionListener {
+        ReviewFragment.OnFragmentInteractionListener,
+        ReserveExtraCoddingFragment.OnReserveExtraListFragmentInteractionListener {
 
     private String TAG = ReserveActivity.class.getSimpleName();
+
     private BottomNavigationView navigation;
 
     private String id_hotel;
@@ -67,6 +74,7 @@ public class ReserveActivity extends AsaActivity
     private int mCalcMustPay;
 
     private Reserve5MinResponse mReserve5MinResponse;
+    private ReserveExtraCoddingResponse mReserveExtraCodding;
     private Reserve15MinResponse mReserve15MinResponse;
 
 
@@ -119,16 +127,85 @@ public class ReserveActivity extends AsaActivity
                     return true;
                 case R.id.navigation_review_and_payment:
                     invalidateOptionsMenu();
-                    if (shouldBeginStepReserve15Min()){
+                    if (shouldBeginStepReserve15Min()) {
                         stepReserve15Min();
                         return true;
-                    }else{
+                    } else {
                         return false;
                     }
+                case R.id.navigation_reserve_extra_codding:
+                    invalidateOptionsMenu();
+
+                    stepCalcPrice();
+
+                    if (mCalcRooms <= 0 || mCalcAdults <= 0) {
+
+                        AlertDialog dialog = new AlertDialog.Builder(ReserveActivity.this)
+                                .setMessage("ابتدا اطلاعات رزرو را تعیین کنید.")
+                                .setTitle("پیام سیستمی")
+                                .setPositiveButton("باشه", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .create();
+
+                        dialog.show();
+
+                        return false;
+
+                    }
+
+                    stepReserveExtraCodding();
+
+                    return true;
+
             }
             return false;
         }
     };
+    private Callback<ReserveExtraCoddingResponse> callbackReserveExtraCodding = new Callback<ReserveExtraCoddingResponse>() {
+        @Override
+        public void onResponse(Call<ReserveExtraCoddingResponse> call, Response<ReserveExtraCoddingResponse> response) {
+            Log.d(TAG, "onResponse: " + response.body());
+
+            loading.setVisibility(View.INVISIBLE);
+
+            mReserveExtraCodding = response.body();
+
+            if (reserveExtraCoddingFragment == null) {
+                reserveExtraCoddingFragment= ReserveExtraCoddingFragment.newInstance(1);
+            }
+
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragmentContainer, reserveExtraCoddingFragment);
+            fragmentTransaction.commit();
+
+            getSupportFragmentManager().executePendingTransactions();
+
+            reserveExtraCoddingFragment.updateReserveExtra(mReserveExtraCodding.message);
+
+        }
+
+        @Override
+        public void onFailure(Call<ReserveExtraCoddingResponse> call, Throwable t) {
+            loading.setVisibility(View.INVISIBLE);
+            Toast.makeText(ReserveActivity.this, "Network Failed", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private void stepReserveExtraCodding() {
+
+       loading.setVisibility(View.VISIBLE);
+
+        AsaService.getReserveExtraCodding(from_date,
+                Asa.getToDate(from_date, night_numbers),
+                "697",
+                callbackReserveExtraCodding);
+
+    }
+
 
     private boolean shouldBeginStepReserve15Min() {
         if (mReserve5MinResponse == null) {
@@ -138,7 +215,7 @@ public class ReserveActivity extends AsaActivity
 
         if (personInfoFragment.isValid()) {
             return true;
-        }else{
+        } else {
             AlertDialog dialog = new AlertDialog.Builder(ReserveActivity.this)
                     .setTitle("تکمیل اطلاعات")
                     .setMessage("اطلاعات فرم بدرستی وارد نشده است")
@@ -279,66 +356,94 @@ public class ReserveActivity extends AsaActivity
                 }
             }
 
-            int totalPerson = model.selectedAdultsCount + model.selectedChildsCount;
-            int totalBedCapacity =
-                    model.selectedRoomsCount * Integer.parseInt(roomkind.room_kind_bed);
-            int totalExtraCapacity =
-                    model.selectedRoomsCount * Integer.parseInt(roomkind.extra_bed);
+            if (model.selectedFoodType == ReserveRoomViewModel.FOODTYPE_BREAKFAST) {
 
-            //   arrange: fill rooms capacity then add extra beds
+                int totalPerson = model.selectedAdultsCount + model.selectedChildsCount;
+                int totalBedCapacity =
+                        model.selectedRoomsCount * Integer.parseInt(roomkind.room_kind_bed);
+                int totalExtraCapacity =
+                        model.selectedRoomsCount * Integer.parseInt(roomkind.extra_bed);
 
-            int remainPersonForExtraBeds = totalPerson - totalBedCapacity;
+                //   arrange: fill rooms capacity then add extra beds
 
-            if (remainPersonForExtraBeds < 0)
-                remainPersonForExtraBeds = 0;
+                int remainPersonForExtraBeds = totalPerson - totalBedCapacity;
 
-            calcExtraBeds += remainPersonForExtraBeds;
+                if (remainPersonForExtraBeds < 0)
+                    remainPersonForExtraBeds = 0;
 
-            int remainChildForExtraBeds = 0;
-            int remainAdultForExtraBeds = 0;
+                calcExtraBeds += remainPersonForExtraBeds;
 
-            if (remainPersonForExtraBeds > 0) { // fill extra child
+                int remainChildForExtraBeds = 0;
+                int remainAdultForExtraBeds = 0;
 
-                if (model.selectedChildsCount > 0) {
+                if (remainPersonForExtraBeds > 0) { // fill extra child
 
-                    while (remainPersonForExtraBeds > 0) {
+                    if (model.selectedChildsCount > 0) {
 
-                        remainChildForExtraBeds++;
-                        remainPersonForExtraBeds--;
+                        while (remainPersonForExtraBeds > 0) {
 
-                        if (remainChildForExtraBeds == model.selectedChildsCount)
-                            break;
+                            remainChildForExtraBeds++;
+                            remainPersonForExtraBeds--;
+
+                            if (remainChildForExtraBeds == model.selectedChildsCount)
+                                break;
+                        }
+
                     }
+                }
+
+                remainAdultForExtraBeds = remainPersonForExtraBeds;
+
+                // calc price
+
+                int totalPrice = 0;
+
+                for (int j = 0; j < Integer.parseInt(night_numbers); j++) {
+
+                    int roomPrice = model.selectedRoomsCount *
+                            Integer.parseInt(model.iranian_daily_board_rate_TSI.get(j));
+
+                    int extraChildPrice = remainChildForExtraBeds *
+                            Integer.parseInt(model.iranian_child_rate_TSI.get(j));
+
+                    int extraAdultPrice = remainAdultForExtraBeds *
+                            Integer.parseInt(model.iranian_extra_bed_rate_TSI.get(j));
+
+                    totalPrice += roomPrice + extraChildPrice + extraAdultPrice;
 
                 }
+
+                calcTotalPrice += totalPrice;
+                calcDiscount += totalPrice * 20 / 100;
             }
 
-            remainAdultForExtraBeds = remainPersonForExtraBeds;
+            if (model.selectedFoodType == ReserveRoomViewModel.FOODTYPE_BREAKFAST_LUNCH_DINNER) {
 
-            // calc price
+                //calc price for fullboard
 
-            int totalPrice = 0;
+                int totalPrice = 0;
 
-            for (int j = 0; j < Integer.parseInt(night_numbers); j++) {
+                for (int j = 0; j < Integer.parseInt(night_numbers); j++) {
 
-                int roomPrice = model.selectedRoomsCount *
-                        Integer.parseInt(model.iranian_daily_board_rate_TSI.get(j));
+                    if (model.selectedAdultsCount <= 1) {
+                        totalPrice += 2 *
+                                Integer.parseInt(model.lunch_dinner_person.get(j));
+                    } else {
+                        totalPrice += model.selectedAdultsCount *
+                                Integer.parseInt(model.lunch_dinner_person.get(j));
+                    }
 
-                int extraChildPrice = remainChildForExtraBeds *
-                        Integer.parseInt(model.iranian_child_rate_TSI.get(j));
+                    totalPrice += model.selectedChildsCount *
+                            Integer.parseInt(model.lunch_dinner_person.get(j)) / 2;
 
-                int extraAdultPrice = remainAdultForExtraBeds *
-                        Integer.parseInt(model.iranian_extra_bed_rate_TSI.get(j));
+                }
 
-                totalPrice += roomPrice + extraChildPrice + extraAdultPrice;
-
+                calcTotalPrice += totalPrice;
             }
 
             calcRooms += model.selectedRoomsCount;
             calcAdults += model.selectedAdultsCount;
             calcChilds += model.selectedChildsCount;
-            calcTotalPrice += totalPrice;
-            calcDiscount += totalPrice * 20 / 100;
 
         }
 
@@ -364,11 +469,13 @@ public class ReserveActivity extends AsaActivity
 
     }
 
-    private void stepShowCalcPrice(int calcRooms, int calcChilds, int calcAdults, int calcExtraBeds, String calcStartDate, String calcEndDate, int calcDiscount, int calcTotalPrice) {
+    private void stepShowCalcPrice(int calcRooms, int calcChilds, int calcAdults,
+                                   int calcExtraBeds, String calcStartDate, String calcEndDate, int calcDiscount,
+                                   int calcTotalPrice) {
 
         View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
@@ -418,6 +525,7 @@ public class ReserveActivity extends AsaActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserve);
+
         loading = findViewById(R.id.loading);
         init();
 
@@ -437,6 +545,13 @@ public class ReserveActivity extends AsaActivity
         }
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
+
+        if (UserLoginPreferencecs.read(this, UserLoginPreferencecs.PREF_PANEL_RESERVE_EXTRA).equals("1")){
+
+            navigation.getMenu().add(Menu.NONE, R.id.navigation_reserve_extra_codding, 2 , "خدمات اضافی").setIcon(R.drawable.ic_reserve_extra);
+
+        }
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         reserveRoomFragment = ReserveRoomFragment.newInstance(
@@ -463,14 +578,13 @@ public class ReserveActivity extends AsaActivity
             } else if (navigation.getSelectedItemId() == R.id.navigation_personal_info) {
                 menu.findItem(R.id.menu_calc_price).setVisible(true);
                 menu.findItem(R.id.menu_save_personal_info).setVisible(false);
-            }else if(navigation.getSelectedItemId() == R.id.navigation_review_and_payment){
+            } else if (navigation.getSelectedItemId() == R.id.navigation_review_and_payment) {
+                menu.findItem(R.id.menu_calc_price).setVisible(true);
+                menu.findItem(R.id.menu_save_personal_info).setVisible(false);
+            }else if(navigation.getSelectedItemId() == R.id.navigation_reserve_extra_codding){
                 menu.findItem(R.id.menu_calc_price).setVisible(true);
                 menu.findItem(R.id.menu_save_personal_info).setVisible(false);
             }
-//            else if (navigation.getSelectedItemId() == R.id.navigation_personal_info) {
-//                menu.findItem(R.id.menu_calc_price).setVisible(false);
-//                menu.findItem(R.id.menu_save_personal_info).setVisible(true);
-//            }
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -517,7 +631,7 @@ public class ReserveActivity extends AsaActivity
             intent.putExtra("hotelAddress", getIntent().getStringExtra("hotelAddress"));
             intent.putExtra("hotelPhone", "051335----4");
             //QRCODE Info
-            
+
             //Reserve Info
 
             intent.putExtra("fromDate", from_date);
@@ -544,7 +658,6 @@ public class ReserveActivity extends AsaActivity
                 }
             }
             intent.putExtra("roomCount", roomCount);
-
 
 
             startActivity(intent);
@@ -609,7 +722,7 @@ public class ReserveActivity extends AsaActivity
     @Override
     public void onPersonFragmentInteraction() {
 
-        if (shouldBeginStepReserve15Min()){
+        if (shouldBeginStepReserve15Min()) {
             stepReserve15Min();
         }
 
@@ -618,6 +731,11 @@ public class ReserveActivity extends AsaActivity
 
     @Override
     public void onReviewFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onReserveExtraListFragmentInteraction(com.example.khahani.asa.model.reserve_extra_codding.Message item) {
 
     }
 }

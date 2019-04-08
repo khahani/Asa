@@ -16,9 +16,11 @@ import com.example.khahani.asa.fragment.PersonInfoFragment;
 import com.example.khahani.asa.fragment.CalcPriceFragment;
 import com.example.khahani.asa.fragment.CityFragment;
 import com.example.khahani.asa.fragment.HotelFragment;
+import com.example.khahani.asa.fragment.ReserveExtraCoddingFragment;
 import com.example.khahani.asa.fragment.ReserveRoomFragment;
 import com.example.khahani.asa.fragment.ReviewFragment;
 import com.example.khahani.asa.fragment.Step1Fragment;
+import com.example.khahani.asa.model.reserve_extra_codding.ReserveExtraCoddingResponse;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
@@ -47,6 +49,7 @@ public class AsaActivity extends AppCompatActivity {
     protected CalcPriceFragment calcPriceFragment;
     protected PersonInfoFragment personInfoFragment;
     protected ReviewFragment reviewFragment;
+    protected ReserveExtraCoddingFragment reserveExtraCoddingFragment;
 
     protected void init() {
 

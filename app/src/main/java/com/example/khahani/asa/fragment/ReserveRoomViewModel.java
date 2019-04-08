@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReserveRoomViewModel {
+
+    public static final int FOODTYPE_NONE = -1;
+    public static final int FOODTYPE_BREAKFAST = 0;
+    public static final int FOODTYPE_BREAKFAST_LUNCH_DINNER = 1;
+
+
     public String hotel_id;
     public String room_kind_id;
     public String room_kind_name;
@@ -15,15 +21,24 @@ public class ReserveRoomViewModel {
     public List<String> iranian_daily_board_rate_TSI;
     public List<String> iranian_extra_bed_rate_TSI;
     public List<String> iranian_child_rate_TSI;
+    public List<String> lunch_person;
+    public List<String> dinner_person;
+    public List<String> lunch_dinner_person;
+
     public int selectedRoomsCount;
     public int selectedAdultsCount;
     public int selectedChildsCount;
+    public int selectedFoodType;
 
     public ReserveRoomViewModel() {
         iranian_date = new ArrayList<>();
         iranian_daily_board_rate_TSI = new ArrayList<>();
         iranian_extra_bed_rate_TSI = new ArrayList<>();
         iranian_child_rate_TSI = new ArrayList<>();
+        lunch_person = new ArrayList<>();
+        dinner_person = new ArrayList<>();
+        lunch_dinner_person = new ArrayList<>();
+        selectedFoodType = FOODTYPE_NONE;
     }
 
     public static List<ReserveRoomViewModel> fromCapacities(List<Message> capacities) {
@@ -49,6 +64,7 @@ public class ReserveRoomViewModel {
                     model.iranian_daily_board_rate_TSI.add(current.iranian_daily_board_rate_TSI);
                     model.iranian_child_rate_TSI.add(current.iranian_child_rate_TSI);
                     model.iranian_extra_bed_rate_TSI.add(current.iranian_extra_bed_rate_TSI);
+                    model.lunch_dinner_person.add(current.lunch_dinner_person);
 
                     exists = true;
                     break;
@@ -68,6 +84,7 @@ public class ReserveRoomViewModel {
                 model.iranian_daily_board_rate_TSI.add(current.iranian_daily_board_rate_TSI);
                 model.iranian_child_rate_TSI.add(current.iranian_child_rate_TSI);
                 model.iranian_extra_bed_rate_TSI.add(current.iranian_extra_bed_rate_TSI);
+                model.lunch_dinner_person.add(current.lunch_dinner_person);
 
                 data.add(model);
             }
