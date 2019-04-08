@@ -9,6 +9,7 @@ import com.example.khahani.asa.model.loginuser.LoginUserResponse;
 import com.example.khahani.asa.model.reserve15min.Reserve15MinResponse;
 import com.example.khahani.asa.model.reserve5min.Reserve5MinResponse;
 import com.example.khahani.asa.model.reserve_extra_codding.ReserveExtraCoddingResponse;
+import com.example.khahani.asa.model.reserve_extra_codding_city.ReserveExtraCoddingCityResponse;
 import com.example.khahani.asa.model.roomkinds.RoomkindsResponse;
 
 import org.json.JSONArray;
@@ -141,5 +142,16 @@ public interface ApiService {
             @Query("to_date") String to_date,
             @Query("id_hotel") String id_hotel
             );
+
+    @GET("reserve_extra_codding_city")
+    Call<ReserveExtraCoddingCityResponse> getReserveExtraCoddingCity(
+            @Query("access_key_id") String access_key_id,
+            @Query("signature") String signature,
+            @Query("version") String version,
+            @Query("client_time_stamp") String client_time_stamp,
+            @Query("from_date") String from_date,
+            @Query("to_date") String to_date,
+            @Query("id_city") String id_city
+    );
 
 }
