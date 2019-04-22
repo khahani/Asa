@@ -181,6 +181,7 @@ public class Step1Fragment extends Fragment {
     }
 
     public void updateEditTextFromDate(String text) {
+
         mBinding.editTextFromDate.setText(text);
         updateToDate(mBinding.spinnerNumberNights.getSelectedItemPosition() + 1);
     }

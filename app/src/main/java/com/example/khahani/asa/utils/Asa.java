@@ -116,10 +116,21 @@ public class Asa {
         int month = calendar.getPersianMonth();
         int year = calendar.getPersianYear();
 
-        if (originMonth == 1) {
-            return year + "/" + month + "/" + day;
+        String dayValue,monthValue;
+
+        if (day <= 9) {
+            dayValue = "0" + Integer.toString(day);
         } else {
-            return year + "/" + (month + 1) + "/" + day;
+            dayValue = Integer.toString(day);
+        }
+
+        if (originMonth == 1) {
+            return year + "/0" + month + "/" + dayValue;
+        } else {
+            if (originMonth <= 9) {
+                return year + "/0" + (month + 1) + "/" + dayValue;
+            }
+            return year + "/" + (month + 1) + "/" + dayValue;
         }
     }
 

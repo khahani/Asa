@@ -48,6 +48,8 @@ public class AsaService {
                                      String night_numbers,
                                      Callback<CapacitiesResponse> callbackCapacities) {
 
+        from_date = Asa.getToDate(from_date, "0");
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
@@ -202,6 +204,7 @@ public class AsaService {
     public static void getHotelsDate(String id_city, String id_hotel,
                                      String from_date, String to_date,
                                      Callback<HotelsDateResponse> callbackHotelsDate) {
+        from_date = Asa.getToDate(from_date, "0");
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
@@ -263,7 +266,7 @@ public class AsaService {
                                        String from_date, String to_date,
                                        List<RoomDetail> roomDetails,
                                        Callback<Reserve5MinResponse> callbackReserve5Min) {
-
+        from_date = Asa.getToDate(from_date, "0");
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -463,7 +466,7 @@ public class AsaService {
                                     String to_date,
                                     String id_hotel,
                                     Callback<ReserveExtraCoddingResponse> callbackReserveExtraCoddingResponse) {
-
+        from_date = Asa.getToDate(from_date, "0");
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
@@ -529,7 +532,7 @@ public class AsaService {
                                               String to_date,
                                               String id_city,
                                               Callback<ReserveExtraCoddingCityResponse> callbackReserveExtraCoddingCityResponse) {
-
+        from_date = Asa.getToDate(from_date, "0");
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
